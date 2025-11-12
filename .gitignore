@@ -71,3 +71,9 @@ out/
 badge.svg
 ci_badge.svg
 
+# Temporary test directories
+tmp_*/
+tmp_test/
+tmp_go_nogo/
+tmp_release_test/
+
