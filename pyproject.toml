@@ -1,6 +1,6 @@
 [project]
 name = "multi-agent-system"
-version = "1.0.1-dev"
+version = "1.0.0"
 description = "Multi-agent AI development framework"
 requires-python = ">=3.8"
 dependencies = [
