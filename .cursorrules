@@ -33,14 +33,27 @@ You are an AI assistant specialized in **Python development** (with support for 
 ### Don't ❌
 - Don't define agent names in snake_case in YAML
 - Don't create agents without advisors (unless shared)
+- Don't write any content in Hebrew (code, docs, comments, logs, etc.)
 - Don't log in Hebrew or with emojis
 - Don't overwrite completed files without checking marker
 
 ## Language Rules
 
+**CRITICAL: All project files must be written in English only.**
+
 - **Python:** English only, no Hebrew, no emojis
-- **Markdown:** Hebrew allowed for docs, emojis allowed for visual clarity
+  - Code, comments, docstrings, variable names, function names, class names
+  - Log messages and error messages
+- **Markdown Documentation:** English only, no Hebrew
+  - All `.md` files in `docs/` must be in English
+  - README.md must be in English
+  - Release notes, changelogs, and all documentation must be in English
+  - Emojis are allowed for visual clarity in markdown
 - **Code samples:** English only, no emojis
+- **Configuration files:** English only (YAML, JSON, TOML, etc.)
+- **Comments and docstrings:** English only
+
+**Exception:** None. All project content must be in English for consistency and maintainability.
 
 ## File Organization
 

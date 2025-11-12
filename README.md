@@ -78,6 +78,60 @@ See [docs/QUICKSTART.md](docs/QUICKSTART.md) for detailed setup and [docs/INDEX.
 
 ---
 
+## 🏗️ Architecture Overview
+
+**What this framework does:** Policy-driven pipeline that runs **Agents** (produce artifacts) under **Advisor/Council** review (Quality Gates). Everything is defined in YAML, logged to events, cached/resumable, and produces Artifacts + Manifest at the end.
+
+### Lifecycle Flow
+
+```
+CLI + YAML → Render Task → Agent Run → Review → Quality Gate → Persist → Checkpoint
+                                 ↓ (fail)
+                              Retry Loop
+```
+
+**Key Components:**
+
+- **Orchestrator** - Renders tasks, executes agents, runs advisors, enforces quality gates, manages retries/timeouts
+- **SharedMemory** - Namespaced storage: `{stage}.content`, `{stage}.artifacts[]`, `{stage}.score`
+- **Policy (YAML)** - `score_thresholds`, `timeouts`, `retries`, `advisors` (council with weights/decision mode)
+- **Checkpoints** - FS or SQLite storage for resume capability
+- **Cache** - Agent version-aware caching (invalidates on agent upgrade)
+- **Artifacts** - Organized by stage, with `manifest.json` and optional ZIP packaging
+
+**Typical Run:**
+
+```bash
+# Full pipeline
+python cli.py --pipeline pipeline/production.yaml --mem 'product_idea="Todo App"' --save-artifacts
+
+# Resume from checkpoint
+python cli.py --pipeline pipeline/production.yaml --resume-run-id <run_id>
+
+# Parallel execution (DAG waves)
+python cli.py --pipeline pipeline/production.yaml --parallel --max-workers 4
+```
+
+**Data Shapes:**
+
+- `AgentOutput(content, artifacts[], metadata)` - Agent produces structured output
+- `AdvisorReview(score, approved, suggestions[], critical_issues[])` - Advisor evaluates quality
+- `AdvisorCouncil` - Multiple advisors with weighted/majority decision
+
+**Prove it works:**
+
+```bash
+# Production demo (requires Playwright)
+pip install playwright && playwright install chromium
+python cli.py --pipeline pipeline/gallery/idea-to-zip/pipeline-production-demo.yaml \
+  --mem 'product_idea="Coffee shop" brand="BlueBean"' --save-artifacts
+# Output: out/{run_id}/Package ZIP/package.zip with HTML, screenshot, reports, manifest
+```
+
+📖 **Architecture docs:** [Quick guide](docs/QUICK_ARCH.md) (60s) | [Full details](docs/ARCHITECTURE.md) (deep-dive)
+
+---
+
 ## 🧬 Role Model
 
 We split the system into 3 layers:

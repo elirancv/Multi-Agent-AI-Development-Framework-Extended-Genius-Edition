@@ -30,6 +30,15 @@ This is the first stable release of the Multi-Agent AI Development Framework. Al
 - **Pipeline Visualization** - Graph export (DOT/PNG) for pipeline visualization
 - **Nightly Hard Tests** - Automated comprehensive testing with KPI reports
 
+### Architecture Highlights
+- **YAML-driven pipeline** with policy-based quality gates (thresholds, timeouts, retries)
+- **Agents produce; Advisors (or weighted Council) review** → deterministic proceed/retry
+- **SharedMemory namespace** per stage; Jinja2 task rendering across stages
+- **Checkpoints (FS/SQLite)** + resume at step granularity; cache keyed by `agent_version`
+- **Artifacts persisted** per stage + `manifest.json` + human report; optional ZIP packaging
+- **Parallel waves** for DAG execution; eventlog + per-stage duration profiling
+- **Presets loader**, plugin entry-points, and gallery pipelines (incl. "idea-to-zip")
+
 ## 🔧 New Features
 
 ### Checkpoint Stores

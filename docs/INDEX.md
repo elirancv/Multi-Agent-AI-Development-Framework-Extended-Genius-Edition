@@ -20,9 +20,11 @@ Welcome to the Multi-Agent System documentation. This index provides quick acces
 
 ## Core Concepts
 
+- **[Architecture Overview](ARCHITECTURE.md)** - System architecture, lifecycle, components, and data shapes
+- **[Quick Architecture](QUICK_ARCH.md)** - TL;DR architecture guide (60-second overview)
 - **[Pipelines](README.md#pipelines)** - Pipeline configuration and execution
 - **[Policy](README.md#policy)** - Policy configuration (budgets, timeouts, weights)
-- **[Orchestrator](README.md#orchestrator)** - How the orchestrator works
+- **[Orchestrator](ARCHITECTURE.md#orchestrator)** - How the orchestrator works
 - **[Agents and Advisors](agents_and_advisors.md)** - Complete catalog of agents and advisors
 
 ## Configuration
