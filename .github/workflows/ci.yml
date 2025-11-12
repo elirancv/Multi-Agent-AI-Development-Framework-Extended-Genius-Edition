@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.10", "3.11"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+          pip install pre-commit
+
+      - name: Run pre-commit
+        run: |
+          pre-commit run --all-files
+
+      - name: Run tests
+        run: |
+          pytest -q --cov=src --cov-report=term-missing
+
+      - name: Check code coverage
+        run: |
+          pytest --cov=src --cov-report=xml
+          # Coverage threshold can be added here if needed
+
+      - name: Smoke all pipelines (dry-run)
+        run: |
+          for f in pipeline/*.yaml; do
+            echo "Validating $f..."
+            python cli.py --pipeline "$f" --dry-run || exit 1
+          done
+
+      - name: Sample run (sequential)
+        run: |
+          python cli.py --pipeline pipeline/example.yaml --output json || echo "Sample run failed (non-blocking)"

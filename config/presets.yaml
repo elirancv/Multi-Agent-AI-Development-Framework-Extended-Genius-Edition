@@ -1,0 +1,64 @@
+# Council Presets - YAML shortcuts for common configurations
+
+presets:
+  mvp-fast:
+    description: "MVP Fast Delivery - Light advisors, lower thresholds"
+    policy:
+      version: "1"
+      score_thresholds:
+        requirements: 0.8
+        codegen: 0.85
+      retries:
+        requirements: 0
+        codegen: 1
+      advisors:
+        requirements:
+          decision: majority
+          list: ["RequirementsAdvisor", "PromptRefinerAdvisor"]
+        codegen:
+          decision: average
+          list: ["CodeReviewAdvisor"]
+          weights: {}
+    
+  production:
+    description: "Production Stability - Full advisors, strict thresholds"
+    policy:
+      version: "1"
+      score_thresholds:
+        requirements: 0.85
+        codegen: 0.9
+        security: 0.95
+      retries:
+        requirements: 1
+        codegen: 2
+        security: 3
+      advisors:
+        requirements:
+          decision: average
+          list: ["RequirementsAdvisor", "PromptRefinerAdvisor"]
+          weights:
+            RequirementsAdvisor: 1.0
+            PromptRefinerAdvisor: 0.7
+        codegen:
+          decision: average
+          list: ["CodeReviewAdvisor", "SecurityAdvisor", "ArchitectureAdvisor"]
+          weights:
+            SecurityAdvisor: 1.5
+            ArchitectureAdvisor: 1.2
+    
+  research:
+    description: "Research/Experimental - Relaxed scoring"
+    policy:
+      version: "1"
+      score_thresholds:
+        requirements: 0.6
+        codegen: 0.65
+      retries:
+        requirements: 0
+        codegen: 0
+      advisors:
+        requirements:
+          decision: majority
+          list: ["RequirementsAdvisor"]
+          weights: {}
+

@@ -1,0 +1,73 @@
+---
+version: 2.0.0
+last_updated: 2025-01-12
+template_for: Python Development Projects (with Multi-Agent Support)
+note: "This is a TEMPLATE file. Customize for your project. Most rules are in .cursor/rules/ subdirectories using .mdc format"
+is_template: true
+---
+
+# Cursor Rules for Python Development
+
+> **Quick Start:** This file provides basic fallback rules. For detailed rules, see `.cursor/rules/` directory.
+
+## Role Definition
+
+You are an AI assistant specialized in **Python development** (with support for multi-agent systems). Your role:
+
+- **Help developers** create, maintain, and extend Python projects
+- **Support multi-agent systems** when applicable (rules apply only to matching files)
+- **Enforce consistency** across code, documentation, and configuration
+- **Follow these rules** when generating code, writing docs, or suggesting changes
+- **Apply project-specific conventions** defined in this file
+
+**When in doubt:** Prefer consistency over creativity. Follow the patterns established in this project.
+
+## Quick Reference
+
+### Do ✅
+- Keep all `.md` (except root README) under `docs/`
+- Write Python code in English only
+- Use PascalCase for class names in YAML
+- Store `original_score`, `normalized_critical_count`, `normalized_severity`, `decision` in history
+
+### Don't ❌
+- Don't define agent names in snake_case in YAML
+- Don't create agents without advisors (unless shared)
+- Don't log in Hebrew or with emojis
+- Don't overwrite completed files without checking marker
+
+## Language Rules
+
+- **Python:** English only, no Hebrew, no emojis
+- **Markdown:** Hebrew allowed for docs, emojis allowed for visual clarity
+- **Code samples:** English only, no emojis
+
+## File Organization
+
+- Only `README.md` in root. All other `.md` → `docs/`
+- Code → `src/` or `agents/`
+- Tests → `tests/`
+- Pipelines → `pipeline/*.yaml`
+
+## Multi-Agent Architecture
+
+- **1:1 Rule:** Every agent must have exactly one advisor
+- **Exception:** Shared advisors must be declared in pipeline YAML
+- **Contracts:** Agents return structured dicts, advisors return structured reviews
+
+## For Detailed Rules
+
+See `.cursor/rules/` directory for:
+- Project structure details (`.mdc` files with frontmatter)
+- Code style guidelines
+- Multi-agent architecture patterns
+- Pipeline configuration
+- Testing requirements
+
+---
+
+**Note:** 
+- This is a **TEMPLATE** file. Customize it for your project.
+- Most rules are in `.cursor/rules/` subdirectories using `.mdc` format with frontmatter (description, globs, alwaysApply) as per [Cursor official documentation](https://cursor.com/docs/context/rules).
+- See `docs/TEMPLATE_GUIDE.md` for template usage instructions.
+- See `docs/SETUP_TEMPLATE.md` for step-by-step setup guide.

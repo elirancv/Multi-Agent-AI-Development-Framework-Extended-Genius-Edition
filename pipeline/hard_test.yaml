@@ -1,0 +1,120 @@
+# Hard Test Pipeline - 10+ stages for nightly testing
+project_mode: nightly
+
+policy:
+  version: 1
+  score_thresholds:
+    requirements: 0.85
+    codegen: 0.9
+  retries:
+    requirements: 1
+    codegen: 2
+  timeouts:
+    requirements: 45
+    codegen: 120
+  budget:
+    max_runtime_sec: 900
+    max_stages: 20
+    max_artifacts_bytes: 100000000
+
+stages:
+  - name: requirements
+    category: requirements
+    agent: RequirementsAgent
+    advisor: RequirementsAdvisor
+    task: "PRD for {{ product_idea }}"
+    output: docs/requirements.md
+    min_score: 0.85
+
+  - name: refine1
+    category: requirements
+    agent: PromptRefinerAgent
+    advisor: PromptRefinerAdvisor
+    depends_on: [requirements]
+    task: "Refine PRD for {{ product_idea }}"
+    output: docs/requirements_refined.md
+    min_score: 0.8
+
+  - name: refine2
+    category: requirements
+    agent: PromptRefinerAgent
+    advisor: PromptRefinerAdvisor
+    depends_on: [refine1]
+    task: "Further refine PRD"
+    output: docs/requirements_final.md
+    min_score: 0.8
+
+  - name: code_skel
+    category: codegen
+    agent: CodeSkeletonAgent
+    advisor: CodeReviewAdvisor
+    depends_on: [refine2]
+    task: "Generate HTML/CSS skeleton"
+    output: src/generated_code.py
+    min_score: 0.85
+
+  - name: code_skel2
+    category: codegen
+    agent: CodeSkeletonAgent
+    advisor: CodeReviewAdvisor
+    depends_on: [code_skel]
+    task: "Extend skeleton with additional features"
+    output: src/generated_code_extended.py
+    min_score: 0.85
+
+  - name: static_lint
+    category: codegen
+    agent: StaticLinterAgent
+    advisor: CodeReviewAdvisor
+    depends_on: [code_skel]
+    task: "Lint produced code"
+    output: docs/lint_report.md
+    min_score: 0.7
+
+  - name: static_lint2
+    category: codegen
+    agent: StaticLinterAgent
+    advisor: CodeReviewAdvisor
+    depends_on: [code_skel2]
+    task: "Lint extended code"
+    output: docs/lint_report2.md
+    min_score: 0.7
+
+  - name: accessibility
+    category: codegen
+    agent: AccessibilityAuditAgent
+    advisor: AccessibilityAdvisor
+    depends_on: [code_skel]
+    task: "A11Y audit"
+    output: docs/accessibility_report.md
+    min_score: 0.75
+
+  - name: accessibility2
+    category: codegen
+    agent: AccessibilityAuditAgent
+    advisor: AccessibilityAdvisor
+    depends_on: [code_skel2]
+    task: "A11Y audit extended code"
+    output: docs/accessibility_report2.md
+    min_score: 0.75
+
+  - name: final_review
+    category: requirements
+    agent: RequirementsAgent
+    advisor: RequirementsAdvisor
+    depends_on: [accessibility, accessibility2]
+    task: "Final review of all artifacts"
+    output: docs/final_review.md
+    min_score: 0.8
+
+dependencies:
+  refine1: [requirements]
+  refine2: [refine1]
+  code_skel: [refine2]
+  code_skel2: [code_skel]
+  static_lint: [code_skel]
+  static_lint2: [code_skel2]
+  accessibility: [code_skel]
+  accessibility2: [code_skel2]
+  final_review: [accessibility, accessibility2]
+

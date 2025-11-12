@@ -1,0 +1,127 @@
+name: Hard Tests Nightly
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 2 AM UTC daily
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  hard-tests:
+    name: Hard Tests + KPIs
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Install graphviz
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y graphviz
+      
+      - name: Create hard test pipeline
+        run: |
+          # Create a large pipeline for testing (10+ stages)
+          cat > pipeline/hard_test.yaml << 'EOF'
+          stages:
+            - name: Requirements
+              agent: RequirementsAgent
+              advisor: RequirementsAdvisor
+              output: docs/requirements.md
+              min_score: 0.8
+            
+            - name: Prompt Refine
+              agent: PromptRefinerAgent
+              advisor: PromptRefinerAdvisor
+              input: docs/requirements.md
+              output: docs/prompt_refined.md
+              min_score: 0.75
+            
+            - name: Code Skeleton
+              agent: CodeSkeletonAgent
+              advisor: CodeReviewAdvisor
+              input: docs/prompt_refined.md
+              output: src/generated_code.py
+              min_score: 0.8
+            
+            - name: Static Lint
+              agent: StaticLinterAgent
+              advisor: CodeReviewAdvisor
+              input: src/generated_code.py
+              output: docs/lint_report.md
+              min_score: 0.7
+            
+            - name: Accessibility Audit
+              agent: AccessibilityAuditAgent
+              advisor: AccessibilityAdvisor
+              input: src/generated_code.py
+              output: docs/accessibility_report.md
+              min_score: 0.75
+          
+          dependencies:
+            PromptRefinerAgent: [RequirementsAgent]
+            CodeSkeletonAgent: [PromptRefinerAgent]
+            StaticLinterAgent: [CodeSkeletonAgent]
+            AccessibilityAuditAgent: [CodeSkeletonAgent]
+          EOF
+      
+      - name: Run hard tests with KPIs
+        id: kpis
+        run: |
+          python scripts/hard_test.py \
+            --pipeline pipeline/hard_test.yaml \
+            --parallel \
+            --max-workers 4 \
+            --save-artifacts \
+            --out out/hard-tests \
+            --json > kpi_report.json || true
+      
+      - name: Check KPI files
+        if: always()
+        run: |
+          if [ -f out/hard-tests/kpis.json ]; then
+            echo "KPIs generated successfully"
+            cat out/hard-tests/KPIS_SUMMARY.md || echo "Markdown summary not found"
+          else
+            echo "KPI files not found - tests may have failed"
+          fi
+      
+      - name: Upload hard test artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hard-tests-artifacts
+          path: |
+            out/hard-tests/kpis.json
+            out/hard-tests/kpis.csv
+            out/hard-tests/KPIS_SUMMARY.md
+          retention-days: 30
+          if-no-files-found: ignore
+      
+      - name: Comment on PR (if applicable)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summaryPath = 'out/hard-tests/KPIS_SUMMARY.md';
+            if (fs.existsSync(summaryPath)) {
+              const summary = fs.readFileSync(summaryPath, 'utf8');
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: summary
+              });
+            }
+

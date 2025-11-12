@@ -1,0 +1,28 @@
+# Example pipeline configuration
+# This demonstrates a simple requirements drafting pipeline
+
+project_mode: mvp_fast_delivery
+
+policy:
+  score_thresholds:
+    requirements: 0.80
+
+stages:
+  - name: requirements
+    category: requirements
+    agent: RequirementsDraftingAgent
+    advisor: RequirementsAdvisor
+    task: "Create an MVP PRD for: {product_idea}"
+    max_retries: 1
+
+  - name: refine_prompt
+    category: requirements
+    depends_on: [requirements]
+    agent: PromptRefinerAgent
+    advisor: PromptRefinerAdvisor
+    task: "Refine the prompt based on previous feedback"
+    max_retries: 1
+
+# Shared advisors (for future use - not yet implemented)
+shared_advisors: []
+

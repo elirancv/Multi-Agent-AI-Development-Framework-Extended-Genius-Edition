@@ -1,0 +1,69 @@
+# Production-grade pipeline with full policy configuration
+# Demonstrates: thresholds, timeouts, retries, council, Jinja2 templating
+
+project_mode: production_stability
+
+policy:
+  version: 1
+  score_thresholds:
+    requirements: 0.85
+    codegen: 0.90
+    security: 0.95
+
+  timeouts:
+    requirements: 30.0    # seconds
+    codegen: 90.0
+    security: 120.0
+
+  retries:
+    requirements: 1
+    codegen: 2
+    security: 3
+
+  advisors:
+    requirements:
+      decision: majority
+      list: ["RequirementsAdvisor", "PromptRefinerAdvisor"]
+
+stages:
+  - name: requirements
+    category: requirements
+    agent: RequirementsDraftingAgent
+    advisor: RequirementsAdvisor
+    task: |
+      Create PRD for: {{ product_idea }}
+      Important: last score was {{ requirements.review.score if requirements.review is defined else "N/A" }}
+    max_retries: 0  # Will be overridden by policy.retries
+
+  - name: prompt_refine
+    category: requirements
+    depends_on: [requirements]
+    agent: PromptRefinerAgent
+    advisor: PromptRefinerAdvisor
+    task: "Refine the product prompt based on last review for: {{ product_idea }}"
+    max_retries: 0
+
+  - name: code_skeleton
+    category: codegen
+    depends_on: [prompt_refine]
+    agent: CodeSkeletonAgent
+    advisor: CodeReviewAdvisor
+    task: "Generate a minimal, static HTML/CSS skeleton based on refined prompt"
+    max_retries: 0
+
+  - name: static_lint
+    category: codegen
+    depends_on: [code_skeleton]
+    agent: StaticLinterAgent
+    advisor: StaticLinterAdvisor
+    task: "Perform static code analysis on generated code artifacts"
+    max_retries: 0
+
+  - name: accessibility_audit
+    category: security
+    depends_on: [code_skeleton]
+    agent: AccessibilityAuditAgent
+    advisor: AccessibilityAuditAdvisor
+    task: "Perform accessibility audit on HTML/CSS artifacts"
+    max_retries: 0
+

@@ -1,0 +1,103 @@
+name: Smoke Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  smoke-fast:
+    name: Smoke Tests (Fast)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.11", "3.13"]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Install graphviz (system)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y graphviz
+      
+      - name: Run fast smoke tests
+        run: |
+          python scripts/smoke_test.py --skip-slow --verbose --out out/smoke-${{ matrix.python-version }}
+      
+      - name: Export graph
+        run: |
+          python cli.py --pipeline pipeline/production.yaml --dry-run --export-graph out/smoke-${{ matrix.python-version }}/pipeline.dot || true
+      
+      - name: Upload smoke artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-artifacts-py${{ matrix.python-version }}
+          path: |
+            out/smoke-${{ matrix.python-version }}/**/*.xml
+            out/smoke-${{ matrix.python-version }}/**/*.md
+            out/smoke-${{ matrix.python-version }}/**/*.dot
+          retention-days: 7
+          if-no-files-found: ignore
+
+  smoke-full:
+    name: Smoke Tests (Full)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    strategy:
+      matrix:
+        python-version: ["3.11"]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Install graphviz (system)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y graphviz
+      
+      - name: Run full smoke tests
+        timeout-minutes: 30
+        run: |
+          python scripts/smoke_test.py --verbose --out out/smoke-full --timeout 1800
+      
+      - name: Export graph
+        run: |
+          python cli.py --pipeline pipeline/production.yaml --dry-run --export-graph out/smoke-full/pipeline.dot || true
+      
+      - name: Upload smoke artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-full-artifacts
+          path: |
+            out/smoke-full/**/*.xml
+            out/smoke-full/**/*.md
+            out/smoke-full/**/*.dot
+            out/smoke-full/**/*.jsonl
+          retention-days: 30
+          if-no-files-found: ignore
+

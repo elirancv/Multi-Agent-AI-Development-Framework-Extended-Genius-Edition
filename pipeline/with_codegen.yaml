@@ -1,0 +1,32 @@
+# Pipeline with code generation stage
+project_mode: mvp_fast_delivery
+
+policy:
+  score_thresholds:
+    requirements: 0.80
+    codegen: 0.90
+
+stages:
+  - name: requirements
+    category: requirements
+    agent: RequirementsDraftingAgent
+    advisor: RequirementsAdvisor
+    task: "Create an MVP PRD for: {product_idea}"
+    max_retries: 1
+
+  - name: prompt_refine
+    category: requirements
+    depends_on: [requirements]
+    agent: PromptRefinerAgent
+    advisor: PromptRefinerAdvisor
+    task: "Refine the product prompt based on last review for: {product_idea}"
+    max_retries: 1
+
+  - name: code_skeleton
+    category: codegen
+    depends_on: [prompt_refine]
+    agent: CodeSkeletonAgent
+    advisor: CodeReviewAdvisor
+    task: "Generate a minimal, static HTML/CSS skeleton based on refined prompt"
+    max_retries: 1
+
