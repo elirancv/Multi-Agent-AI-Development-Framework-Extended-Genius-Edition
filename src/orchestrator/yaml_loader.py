@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Set, Tuple
 import yaml
 from .runner import PipelineStep
-from .factory import AGENTS, ADVISORS
+from .factory import CORE_AGENTS, CORE_ADVISORS
 
 
 class PipelineValidationError(Exception):
@@ -35,11 +35,11 @@ class YAMLPipelineLoader:
         Initialize loader with agent and advisor registries for validation.
         
         Args:
-            agent_registry: Dict mapping agent names to classes/types (defaults to AGENTS)
-            advisor_registry: Dict mapping advisor names to classes/types (defaults to ADVISORS)
+            agent_registry: Dict mapping agent names to classes/types (defaults to CORE_AGENTS)
+            advisor_registry: Dict mapping advisor names to classes/types (defaults to CORE_ADVISORS)
         """
-        self.agent_registry = agent_registry or AGENTS
-        self.advisor_registry = advisor_registry or ADVISORS
+        self.agent_registry = agent_registry or CORE_AGENTS
+        self.advisor_registry = advisor_registry or CORE_ADVISORS
 
     def load(self, yaml_content: str) -> Tuple[List[PipelineStep], Policy]:
         """

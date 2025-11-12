@@ -6,7 +6,7 @@ from src.orchestrator.yaml_loader import (
     PipelineValidationError,
     Policy,
 )
-from src.orchestrator.factory import AGENTS, ADVISORS
+from src.orchestrator.factory import CORE_AGENTS, CORE_ADVISORS
 
 
 def test_load_policy() -> None:

@@ -1,0 +1,33 @@
+# Static Site Generator Pipeline
+# Generates a static website from markdown files
+
+stages:
+  - name: Requirements
+    agent: RequirementsDraftingAgent
+    advisor: RequirementsAdvisor
+    task: "Define requirements for a static site generator that converts markdown to HTML"
+    output: docs/requirements.md
+    min_score: 0.80
+
+  - name: Architecture
+    agent: CodeSkeletonAgent
+    advisor: CodeReviewAdvisor
+    task: "Design architecture for static site generator with markdown parsing and HTML generation"
+    input: docs/requirements.md
+    output: src/static_site_generator.py
+    min_score: 0.85
+
+  - name: Documentation
+    agent: RequirementsDraftingAgent
+    advisor: RequirementsAdvisor
+    task: "Create README for the static site generator with usage examples"
+    input: docs/requirements.md
+    output: docs/README.md
+    min_score: 0.75
+
+dependencies:
+  Architecture:
+    - Requirements
+  Documentation:
+    - Requirements
+

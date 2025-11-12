@@ -18,6 +18,16 @@ multiagent = "cli:main"
 multiagent-clean = "scripts.clean_artifacts:main"
 multiagent-new = "scripts.multiagent_new:main"
 
+# Plugin API entry points (for v1.1+)
+# Third-party packages can register agents/advisors using these entry points
+[project.entry-points."multiagent.agents"]
+# Example:
+# my_org.StaticLinterX = "my_pkg.agents.static_linter_x:StaticLinterX"
+
+[project.entry-points."multiagent.advisors"]
+# Example:
+# my_org.SecReviewX = "my_pkg.advisors.sec_review_x:SecReviewX"
+
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0.0",

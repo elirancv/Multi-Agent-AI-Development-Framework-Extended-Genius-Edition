@@ -1,0 +1,43 @@
+# REST API Service Pipeline
+# Creates a FastAPI service with OpenAPI documentation
+
+stages:
+  - name: Requirements
+    agent: RequirementsDraftingAgent
+    advisor: RequirementsAdvisor
+    task: "Define requirements for a REST API service using FastAPI"
+    output: docs/requirements.md
+    min_score: 0.80
+
+  - name: API Design
+    agent: CodeSkeletonAgent
+    advisor: CodeReviewAdvisor
+    task: "Design REST API endpoints and OpenAPI schema"
+    input: docs/requirements.md
+    output: src/api_schema.py
+    min_score: 0.85
+
+  - name: Implementation
+    agent: CodeSkeletonAgent
+    advisor: CodeReviewAdvisor
+    task: "Implement FastAPI service with endpoints and OpenAPI docs"
+    input: src/api_schema.py
+    output: src/api_service.py
+    min_score: 0.85
+
+  - name: Documentation
+    agent: RequirementsDraftingAgent
+    advisor: RequirementsAdvisor
+    task: "Create API documentation and usage guide"
+    input: src/api_service.py
+    output: docs/API.md
+    min_score: 0.75
+
+dependencies:
+  API Design:
+    - Requirements
+  Implementation:
+    - API Design
+  Documentation:
+    - Implementation
+

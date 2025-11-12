@@ -1,0 +1,32 @@
+Multi-Agent AI Development Framework
+Copyright (c) 2025 Contributors
+
+This software includes the following third-party components:
+
+PyYAML
+  Copyright (c) 2006 Kirill Simonov
+  License: MIT
+  https://github.com/yaml/pyyaml
+
+pydantic
+  Copyright (c) 2017 Pydantic
+  License: MIT
+  https://github.com/pydantic/pydantic
+
+Jinja2
+  Copyright (c) 2007-2024 Pallets
+  License: BSD-3-Clause
+  https://github.com/pallets/jinja2
+
+graphviz
+  Copyright (c) 2013 Sebastian Bank
+  License: MIT
+  https://github.com/xflr6/graphviz
+
+OpenTelemetry
+  Copyright (c) 2020 OpenTelemetry Authors
+  License: Apache-2.0
+  https://github.com/open-telemetry/opentelemetry-python
+
+For full license information, see LICENSE file.
+

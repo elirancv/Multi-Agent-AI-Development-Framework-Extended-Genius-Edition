@@ -1,0 +1,92 @@
+# Release Drafter Configuration
+# Automatically drafts release notes from merged PRs
+# See: https://github.com/release-drafter/release-drafter
+
+name-template: "v$NEXT_PATCH_VERSION"
+tag-template: "v$NEXT_PATCH_VERSION"
+
+categories:
+  - title: "✨ Features"
+    labels:
+      - "feat"
+      - "feature"
+      - "enhancement"
+  - title: "🐛 Bug Fixes"
+    labels:
+      - "fix"
+      - "bug"
+      - "bugfix"
+  - title: "🧹 Chore"
+    labels:
+      - "chore"
+      - "maintenance"
+  - title: "📚 Documentation"
+    labels:
+      - "docs"
+      - "documentation"
+  - title: "♻️ Refactoring"
+    labels:
+      - "refactor"
+      - "refactoring"
+  - title: "⚡ Performance"
+    labels:
+      - "perf"
+      - "performance"
+  - title: "🧪 Tests"
+    labels:
+      - "test"
+      - "tests"
+  - title: "🔧 CI/CD"
+    labels:
+      - "ci"
+      - "cd"
+      - "workflow"
+
+change-template: "- $TITLE (#$NUMBER) by @$AUTHOR"
+change-title-escapes: '\<*_&'
+
+version-resolver:
+  major:
+    labels:
+      - "major"
+      - "breaking"
+  minor:
+    labels:
+      - "minor"
+      - "enhancement"
+  patch:
+    labels:
+      - "patch"
+      - "fix"
+      - "bugfix"
+
+template: |
+  ## What's New in $NEXT_PATCH_VERSION
+
+  $CHANGES
+
+  ---
+
+  ## 🚀 Quick Start
+
+  ```bash
+  # Run your first pipeline
+  python cli.py --pipeline pipeline/production.yaml --preset mvp-fast
+  ```
+
+  ## 📖 Documentation
+
+  - [Quickstart Guide](docs/QUICKSTART.md)
+  - [Full Documentation](docs/INDEX.md)
+  - [API Reference](docs/api/)
+
+  ## 📊 Metrics
+
+  - **Tests**: All passing ✅
+  - **CI/CD**: Green ✅
+  - **Documentation**: Complete ✅
+
+  ---
+
+  **Full Changelog**: $PREVIOUS_TAG...$NEXT_PATCH_VERSION
+

@@ -1,0 +1,43 @@
+# ETL Pipeline
+# Data extraction, transformation, and loading
+
+stages:
+  - name: Requirements
+    agent: RequirementsDraftingAgent
+    advisor: RequirementsAdvisor
+    task: "Define requirements for an ETL pipeline"
+    output: docs/requirements.md
+    min_score: 0.80
+
+  - name: Data Model
+    agent: CodeSkeletonAgent
+    advisor: CodeReviewAdvisor
+    task: "Design data model and transformation logic"
+    input: docs/requirements.md
+    output: src/data_model.py
+    min_score: 0.85
+
+  - name: ETL Implementation
+    agent: CodeSkeletonAgent
+    advisor: CodeReviewAdvisor
+    task: "Implement ETL pipeline with extraction, transformation, and loading"
+    input: src/data_model.py
+    output: src/etl_pipeline.py
+    min_score: 0.85
+
+  - name: Testing
+    agent: CodeSkeletonAgent
+    advisor: CodeReviewAdvisor
+    task: "Create test cases for ETL pipeline"
+    input: src/etl_pipeline.py
+    output: tests/test_etl.py
+    min_score: 0.75
+
+dependencies:
+  Data Model:
+    - Requirements
+  ETL Implementation:
+    - Data Model
+  Testing:
+    - ETL Implementation
+

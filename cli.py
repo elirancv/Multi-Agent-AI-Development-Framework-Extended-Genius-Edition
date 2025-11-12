@@ -370,11 +370,22 @@ def clean_command() -> None:
     sys.exit(clean_main())
 
 
+def doctor_command() -> None:
+    """Doctor command entry point."""
+    from scripts.doctor import main as doctor_main
+    sys.exit(doctor_main())
+
+
 if __name__ == "__main__":
-    # Check if running as 'clean' command
-    if len(sys.argv) > 1 and sys.argv[1] == "clean":
-        sys.argv = sys.argv[1:]  # Remove 'clean' from args
-        clean_command()
-    else:
-        main()
+    # Check for subcommands
+    if len(sys.argv) > 1:
+        subcommand = sys.argv[1]
+        if subcommand == "clean":
+            sys.argv = sys.argv[1:]  # Remove 'clean' from args
+            clean_command()
+        elif subcommand == "doctor":
+            sys.argv = sys.argv[1:]  # Remove 'doctor' from args
+            doctor_command()
+    
+    main()
 

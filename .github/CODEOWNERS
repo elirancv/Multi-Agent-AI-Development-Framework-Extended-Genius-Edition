@@ -1,0 +1,33 @@
+# CODEOWNERS - Automatic code review assignments
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Documentation
+/docs/                 @your-org/your-team
+/docs/**/*.md          @your-org/your-team
+
+# Pipeline definitions
+/pipeline/             @your-org/your-team
+/pipeline/**/*.yaml    @your-org/your-team
+
+# Core orchestrator (critical)
+/src/orchestrator/     @your-org/your-team
+/src/core/             @your-org/your-team
+
+# Agents and Advisors
+/src/agents/           @your-org/your-team
+/src/advisors/         @your-org/your-team
+
+# Release and CI/CD
+/.github/              @your-org/your-team
+/scripts/              @your-org/your-team
+
+# Configuration files
+/config/               @your-org/your-team
+/pyproject.toml        @your-org/your-team
+/requirements.txt      @your-org/your-team
+
+# Root level important files
+/README.md             @your-org/your-team
+/LICENSE               @your-org/your-team
+/CODE_OF_CONDUCT.md    @your-org/your-team
+

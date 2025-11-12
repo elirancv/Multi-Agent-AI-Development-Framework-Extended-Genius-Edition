@@ -1,0 +1,59 @@
+# PR Labeler Configuration
+# Automatically labels PRs based on changed files and commit messages
+
+# Feature labels
+feat:
+  - changed-files:
+      - any-glob-to-any-file: ['src/agents/**', 'src/advisors/**']
+      - any-glob-to-any-file: ['**/*feature*', '**/*enhancement*']
+  - head-branch: ['feature/**', 'feat/**']
+
+fix:
+  - changed-files:
+      - any-glob-to-any-file: ['**/*bug*', '**/*fix*']
+  - head-branch: ['fix/**', 'bugfix/**']
+
+chore:
+  - changed-files:
+      - any-glob-to-any-file: ['**/requirements*.txt', '**/pyproject.toml', '**/.github/**']
+  - head-branch: ['chore/**', 'maintenance/**']
+
+docs:
+  - changed-files:
+      - any-glob-to-any-file: ['docs/**', '**/*.md', '**/README*']
+
+refactor:
+  - changed-files:
+      - any-glob-to-any-file: ['src/**']
+  - head-branch: ['refactor/**']
+
+perf:
+  - changed-files:
+      - any-glob-to-any-file: ['**/*perf*', '**/*performance*']
+  - head-branch: ['perf/**']
+
+test:
+  - changed-files:
+      - any-glob-to-any-file: ['tests/**', '**/test_*.py']
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file: ['.github/workflows/**', '.github/**/*.yml']
+
+# Version labels
+v1.1:
+  - head-branch: ['v1.1/**', 'feature/v1.1/**']
+
+# Component labels
+plugin-api:
+  - changed-files:
+      - any-glob-to-any-file: ['src/orchestrator/plugin_loader.py', 'src/orchestrator/factory.py', 'docs/PLUGIN*.md']
+
+gallery:
+  - changed-files:
+      - any-glob-to-any-file: ['pipeline/gallery/**', 'docs/*gallery*']
+
+pypi:
+  - changed-files:
+      - any-glob-to-any-file: ['pyproject.toml', '.github/workflows/publish-pypi.yml']
+

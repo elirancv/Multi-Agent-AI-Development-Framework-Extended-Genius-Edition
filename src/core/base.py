@@ -1,3 +1,6 @@
+# Copyright (c) 2025 Multi-Agent AI Development Framework Contributors
+# Licensed under the MIT License
+
 """Base classes for agents and advisors."""
 
 from __future__ import annotations

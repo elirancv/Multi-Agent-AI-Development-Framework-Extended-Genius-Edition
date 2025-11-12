@@ -2,7 +2,7 @@
 
 from .runner import Orchestrator, PipelineStep
 from .runner_parallel import OrchestratorParallel
-from .factory import agent_factory, advisor_factory, AGENTS, ADVISORS
+from .factory import agent_factory, advisor_factory, CORE_AGENTS, CORE_ADVISORS
 from .quality_gate import QualityGate
 from .yaml_loader import YAMLPipelineLoader, PipelineValidationError, Policy
 from .yaml_loader_strict import YAMLPipelineLoaderStrict
@@ -32,8 +32,8 @@ __all__ = [
     "OrchestratorParallel",
     "agent_factory",
     "advisor_factory",
-    "AGENTS",
-    "ADVISORS",
+    "CORE_AGENTS",
+    "CORE_ADVISORS",
     "QualityGate",
     "YAMLPipelineLoader",
     "YAMLPipelineLoaderStrict",

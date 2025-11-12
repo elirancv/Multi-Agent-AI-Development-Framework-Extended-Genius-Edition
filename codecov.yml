@@ -1,0 +1,70 @@
+# Codecov configuration
+# See: https://docs.codecov.com/docs/codecov-yaml
+
+coverage:
+  status:
+    project:
+      default:
+        target: 85%  # Minimum coverage threshold (realistic for v1.0)
+        threshold: 1%  # Allow 1% decrease
+      # Component-specific gates
+      agents:
+        target: 80%  # Agents can have lower coverage (AI-dependent)
+        threshold: 2%
+      advisors:
+        target: 80%  # Advisors can have lower coverage (AI-dependent)
+        threshold: 2%
+      orchestrator:
+        target: 90%  # Core orchestrator should have high coverage
+        threshold: 1%
+      core:
+        target: 95%  # Core types/base classes must be highly covered
+        threshold: 0.5%
+    patch:
+      default:
+        target: 70%  # Minimum patch coverage
+        threshold: 2%  # Allow 2% decrease for patches
+
+comment:
+  layout: "reach,diff,flags,tree,reach"
+  behavior: default
+  require_changes: false
+
+flags:
+  unittests:
+    paths:
+      - tests/
+    carryforward: true
+  
+  # Component flags for better coverage tracking
+  agents:
+    paths:
+      - src/agents/
+    carryforward: true
+  
+  advisors:
+    paths:
+      - src/advisors/
+    carryforward: true
+  
+  orchestrator:
+    paths:
+      - src/orchestrator/
+    carryforward: true
+  
+  core:
+    paths:
+      - src/core/
+    carryforward: true
+
+ignore:
+  - "tests/"
+  - "scripts/"
+  - "docs/"
+  - "*.md"
+  - "*.yml"
+  - "*.yaml"
+  - "*.toml"
+  - "*.txt"
+  - "*.json"
+

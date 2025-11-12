@@ -60,7 +60,8 @@ python cli.py --pipeline pipeline/production.yaml --dry-run --export-graph out/p
 - ✅ All CLI flags remain supported
 - ✅ Policy schema is stable
 - ✅ Agent/Advisor contracts are locked
-- ✅ No breaking changes until v1.1.0
+- ✅ **No breaking changes in 1.0.x** - All patches and minor updates maintain backward compatibility
+- ✅ Breaking changes will only occur in v1.1.0+ with advance notice
 
 See [RELEASE_NOTES_v1.0.0.md](RELEASE_NOTES_v1.0.0.md) for full details.
 

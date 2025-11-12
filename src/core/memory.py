@@ -1,3 +1,6 @@
+# Copyright (c) 2025 Multi-Agent AI Development Framework Contributors
+# Licensed under the MIT License
+
 """Shared memory for agent context and data exchange."""
 
 from __future__ import annotations

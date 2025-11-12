@@ -1,3 +1,6 @@
+# Copyright (c) 2025 Multi-Agent AI Development Framework Contributors
+# Licensed under the MIT License
+
 """Checkpoint and resume functionality for pipeline execution."""
 
 from __future__ import annotations

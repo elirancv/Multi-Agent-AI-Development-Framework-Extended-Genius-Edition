@@ -1,10 +1,14 @@
 # 🤖 Multi-Agent AI Development Framework — Extended Genius Edition
 
-[![Version](https://img.shields.io/github/v/tag/your-org/AgentsSystemV2?label=version)](https://github.com/your-org/AgentsSystemV2/releases)
+[![Version](https://img.shields.io/github/v/tag/elirancv/Multi-Agent-AI-Development-Framework-Extended-Genius-Edition?label=version)](https://github.com/elirancv/Multi-Agent-AI-Development-Framework-Extended-Genius-Edition/releases)
+[![Release](https://img.shields.io/badge/release-v1.0.0-stable-brightgreen.svg)](https://github.com/elirancv/Multi-Agent-AI-Development-Framework-Extended-Genius-Edition/releases/tag/v1.0.0)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![CI](https://img.shields.io/badge/CI-passing-brightgreen.svg)](.github/workflows/ci-smoke.yml)
 [![Smoke Tests](https://img.shields.io/badge/smoke%20tests-passing-brightgreen.svg)](scripts/smoke_test.py)
 [![Tests](https://img.shields.io/badge/tests-87%2F87-brightgreen.svg)](tests/)
+[![Coverage](https://codecov.io/gh/elirancv/Multi-Agent-AI-Development-Framework-Extended-Genius-Edition/branch/main/graph/badge.svg)](https://codecov.io/gh/elirancv/Multi-Agent-AI-Development-Framework-Extended-Genius-Edition)
+[![Nightly Tests](https://img.shields.io/badge/nightly%20tests-passing-brightgreen.svg)](.github/workflows/hard-tests-nightly.yml)
+[![API Docs](https://img.shields.io/badge/API%20docs-available-blue.svg)](docs/api/)
 [![Code Quality](badge.svg)](PROJECT_AUDIT_REPORT.html) [![Audit Status](ci_badge.svg)](PROJECT_AUDIT_REPORT.html)
 
 This version defines a **full-scale, enterprise-style AI software organization**: not just 20 agents, but a **tiered catalog of Functional Agents, Domain Advisors, and Cross-Cutting Reviewers** — so every artifact in the system is planned, built, reviewed, scored, and evolved.
@@ -45,6 +49,16 @@ python cli.py --pipeline pipeline/production.yaml --dry-run --export-graph out/p
 python cli.py --pipeline pipeline/production.yaml --dry-run --export-graph out/pipeline.dot
 ```
 
+**Generate new project scaffold (preview):**
+
+```bash
+# Linux/macOS
+python cli.py multiagent new --template basic --output ./my-project
+
+# Windows PowerShell
+python cli.py multiagent new --template basic --output ./my-project
+```
+
 **Clean old artifacts:**
 
 ```bash
@@ -56,6 +70,11 @@ python cli.py clean --older-than 7d --max-size 2GB --keep-latest 10 --dry-run
 ```
 
 See [docs/QUICKSTART.md](docs/QUICKSTART.md) for detailed setup and [docs/INDEX.md](docs/INDEX.md) for full documentation.
+
+**Need help?** 
+- Run diagnostics: `python scripts/doctor.py` or `python cli.py doctor`
+- Check [Known Issues](docs/KNOWN_ISSUES.md) for common problems
+- Open an [issue](https://github.com/your-org/AgentsSystemV2/issues) or check our [documentation](docs/INDEX.md)
 
 ---
 

@@ -6,7 +6,7 @@ from typing import Dict, List, Tuple
 import yaml
 from .yaml_schema import PipelineModel
 from .runner_parallel import PipelineStep
-from .factory import AGENTS, ADVISORS
+from .factory import CORE_AGENTS, CORE_ADVISORS
 
 
 class YAMLPipelineLoaderStrict:
@@ -34,9 +34,9 @@ class YAMLPipelineLoaderStrict:
 
         # Validate agents/advisors exist
         for st in model.stages:
-            if st.agent not in AGENTS:
+            if st.agent not in CORE_AGENTS:
                 raise KeyError(f"Unknown agent: {st.agent}")
-            if st.advisor not in ADVISORS:
+            if st.advisor not in CORE_ADVISORS:
                 raise KeyError(f"Unknown advisor: {st.advisor}")
 
         # Convert to PipelineStep
