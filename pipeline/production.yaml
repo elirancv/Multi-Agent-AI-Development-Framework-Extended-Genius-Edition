@@ -66,4 +66,3 @@ stages:
     advisor: AccessibilityAuditAdvisor
     task: "Perform accessibility audit on HTML/CSS artifacts"
     max_retries: 0
-

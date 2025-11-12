@@ -163,4 +163,3 @@ See `docs/ANNOUNCEMENT_v1.0.0.md` for:
 ---
 
 **Status**: 🟢 Ready to Release
-

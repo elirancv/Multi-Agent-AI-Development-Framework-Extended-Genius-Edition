@@ -92,4 +92,3 @@
 # Export files
 *.csv text eol=lf
 *.tsv text eol=lf
-

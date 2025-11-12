@@ -36,4 +36,3 @@ python cli.py --pipeline pipeline/gallery/etl-pipeline/pipeline.yaml --preset mv
 🟡 **Planned for v1.1.0**
 
 This is a reference pipeline. Full implementation coming in v1.1.0.
-

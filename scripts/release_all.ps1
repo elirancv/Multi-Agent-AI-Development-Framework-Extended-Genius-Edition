@@ -127,4 +127,3 @@ if ($DryRun) {
     Write-Host "  2. Trigger Nightly Tests (see step 5 above)"
     Write-Host "  3. Monitor metrics (see docs/POST_RELEASE_MONITORING.md)"
 }
-

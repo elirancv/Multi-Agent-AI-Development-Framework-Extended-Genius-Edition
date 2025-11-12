@@ -41,11 +41,7 @@ def test_manifest_includes_all_fields(tmp_path: Path) -> None:
     """Test that manifest includes all required fields."""
     memory = SharedMemory()
     memory.update(
-        {
-            "stage1.artifacts": [
-                {"name": "test.md", "type": "markdown", "content": "Test content"}
-            ]
-        }
+        {"stage1.artifacts": [{"name": "test.md", "type": "markdown", "content": "Test content"}]}
     )
 
     art_root = tmp_path / "artifacts"
@@ -62,4 +58,3 @@ def test_manifest_includes_all_fields(tmp_path: Path) -> None:
     assert "type" in entry
     assert "bytes" in entry
     assert "sha256" in entry
-

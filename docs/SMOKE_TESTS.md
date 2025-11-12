@@ -154,4 +154,3 @@ Compare runs with/without `--no-cache` and check `cache_hit` events in `*_events
 
 - `0` - All tests passed
 - `1` - One or more tests failed
-

@@ -1,0 +1,138 @@
+# Pipeline: From Idea to ZIP (Production Demo)
+#
+# Production-ready version with strict quality gates and screenshot generation.
+# Designed for GitHub Release assets.
+#
+# Usage:
+#   python cli.py --pipeline pipeline/gallery/idea-to-zip/pipeline-production-demo.yaml \
+#     --mem 'product_idea="Coffee shop" brand="BlueBean" primary_color="#0ea5e9" tone="minimal" font_family="Inter"' \
+#     --save-artifacts --output human
+
+stages:
+  - name: Product Definition
+    agent: RequirementsDraftingAgent
+    advisor: RequirementsAdvisor
+    output: docs/product_definition.md
+    min_score: 0.80
+    description: "Define the product from the idea"
+    category: requirements
+    task: |
+      Create comprehensive PRD for: {{ product_idea }}
+      Brand: {{ brand | default("Default") }}
+      Design tone: {{ tone | default("professional") }}
+      Primary color: {{ primary_color | default("#007bff") }}
+      Include: goals, personas, features, acceptance criteria
+
+  - name: Code Skeleton
+    agent: CodeSkeletonAgent
+    advisor: CodeReviewAdvisor
+    input: docs/product_definition.md
+    output: src/index.html
+    min_score: 0.75
+    description: "Generate HTML/CSS skeleton with design variables"
+    category: codegen
+    task: |
+      Generate production-ready HTML/CSS for: {{ product_idea }}
+      Brand: {{ brand | default("Default") }}
+      Primary color: {{ primary_color | default("#007bff") }}
+      Tone: {{ tone | default("professional") }}
+      Font: {{ font_family | default("system-ui") }}
+      Requirements:
+      - Responsive layout (mobile-first)
+      - Modern CSS (flexbox/grid)
+      - Semantic HTML5
+      - Accessible (ARIA labels, proper headings)
+      - Clean, maintainable code
+
+  - name: Static Lint
+    agent: StaticLinterAgent
+    advisor: CodeReviewAdvisor
+    input: src/index.html
+    output: reports/lint_report.md
+    min_score: 0.75
+    description: "Lint the generated code with strict quality gates"
+    category: validation
+
+  - name: Accessibility Audit
+    agent: AccessibilityAuditAgent
+    advisor: CodeReviewAdvisor
+    input: src/index.html
+    output: reports/a11y_report.md
+    min_score: 0.70
+    description: "Check accessibility compliance with strict thresholds"
+    category: validation
+
+  - name: Screenshot
+    agent: ScreenshotAgent
+    advisor: CodeReviewAdvisor
+    input: src/index.html
+    output: screenshots/preview.png
+    min_score: 0.50
+    description: "Generate screenshot preview"
+    category: validation
+    task: |
+      Generate screenshot of: src/index.html
+      Dimensions: 1920x1080
+      Full page screenshot
+
+  - name: Documentation
+    agent: RequirementsDraftingAgent
+    advisor: RequirementsAdvisor
+    input: docs/product_definition.md
+    output: README.md
+    min_score: 0.75
+    description: "Generate comprehensive project README"
+    category: documentation
+    task: |
+      Create professional README for: {{ product_idea }}
+      Include:
+      - Project description
+      - Design system (brand: {{ brand }}, color: {{ primary_color }}, tone: {{ tone }})
+      - Setup instructions
+      - Usage examples
+      - Screenshots section
+      - License
+
+  - name: Package ZIP
+    agent: ZipPackagerAgent
+    advisor: CodeReviewAdvisor
+    input:
+      - src/index.html
+      - README.md
+      - reports/lint_report.md
+      - reports/a11y_report.md
+      - screenshots/preview.png
+    output: dist/package.zip
+    min_score: 0.50
+    description: "Create distributable ZIP package with all artifacts"
+    category: packaging
+
+policy:
+  version: 1
+  thresholds:
+    overall: 0.75
+    requirements: 0.80
+    codegen: 0.75
+    validation: 0.75  # Strict quality gates
+    documentation: 0.75
+    packaging: 0.50
+  timeouts:
+    default: 300
+    requirements: 60
+    codegen: 120
+    validation: 120  # More time for lint/a11y/screenshot
+    documentation: 60
+    packaging: 30
+  retries:
+    default: 1
+    codegen: 2
+    validation: 1
+  advisors:
+    council:
+      - name: RequirementsAdvisor
+        weight: 1.0
+      - name: CodeReviewAdvisor
+        weight: 2.0  # Higher weight for strict quality
+  budget:
+    max_bytes: 10_000_000
+    max_stages: 10

@@ -1,0 +1,38 @@
+# Preset: Marketing-First Pipeline
+# Optimized for marketing landing pages with hero, features, testimonials
+
+preset_name: marketing
+description: "Marketing-focused preset for landing pages (hero, features, testimonials)"
+
+policy:
+  version: 1
+  thresholds:
+    overall: 0.70
+    requirements: 0.75
+    codegen: 0.70
+    validation: 0.70
+    documentation: 0.70
+    packaging: 0.50
+
+  timeouts:
+    default: 300
+    requirements: 60
+    codegen: 120  # More time for marketing design
+    validation: 120
+    documentation: 60
+    packaging: 30
+
+  retries:
+    default: 1
+    codegen: 2  # Retry marketing code generation
+
+  advisors:
+    council:
+      - name: RequirementsAdvisor
+        weight: 1.0
+      - name: CodeReviewAdvisor
+        weight: 1.5  # Emphasize marketing code quality
+
+  budget:
+    max_bytes: 10_000_000
+    max_stages: 10

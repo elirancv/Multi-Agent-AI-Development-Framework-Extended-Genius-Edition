@@ -10,37 +10,37 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      
+
       - name: Install graphviz
         run: |
           sudo apt-get update
           sudo apt-get install -y graphviz
-      
+
       - name: Extract version from tag
         id: version
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Version: $VERSION"
-      
+
       - name: Create release bundle directory
         run: |
           mkdir -p out/release/${{ steps.version.outputs.version }}
-      
+
       - name: Run smoke tests
         run: |
           python scripts/smoke_test.py --skip-slow --verbose --out out/smoke-release
-      
+
       - name: Export pipeline graph
         run: |
           python cli.py --pipeline pipeline/production.yaml --dry-run --export-graph out/release/${{ steps.version.outputs.version }}/pipeline.dot || true
@@ -48,40 +48,40 @@ jobs:
           if command -v dot &> /dev/null; then
             dot -Tpng out/release/${{ steps.version.outputs.version }}/pipeline.dot -o out/release/${{ steps.version.outputs.version }}/pipeline.png || true
           fi
-      
+
       - name: Copy release files
         run: |
           # Copy release notes
           cp RELEASE_NOTES_v${{ steps.version.outputs.version }}.md out/release/${{ steps.version.outputs.version }}/RELEASE_NOTES.md || true
-          
+
           # Copy smoke test results
           cp -r out/smoke-release/* out/release/${{ steps.version.outputs.version }}/smoke/ || true
-          
+
           # Copy smoke tests documentation
           cp docs/SMOKE_TESTS.md out/release/${{ steps.version.outputs.version }}/smoke/ || true
-          
+
           # Copy production pipeline
           cp pipeline/production.yaml out/release/${{ steps.version.outputs.version }}/ || true
-          
+
           # Create bundle manifest
           cat > out/release/${{ steps.version.outputs.version }}/MANIFEST.txt << EOF
           Release Bundle v${{ steps.version.outputs.version }}
           Generated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
-          
+
           Contents:
           - RELEASE_NOTES.md
           - pipeline.dot (and pipeline.png if available)
           - smoke/ (test results and documentation)
           - production.yaml (example pipeline)
           EOF
-      
+
       - name: Create bundle archive
         run: |
           cd out/release/${{ steps.version.outputs.version }}
           tar -czf ../release-bundle-v${{ steps.version.outputs.version }}.tar.gz .
           cd ../..
           zip -r out/release/release-bundle-v${{ steps.version.outputs.version }}.zip out/release/${{ steps.version.outputs.version }}
-      
+
       - name: Upload release bundle
         uses: actions/upload-artifact@v4
         with:
@@ -91,7 +91,7 @@ jobs:
             out/release/release-bundle-v${{ steps.version.outputs.version }}.zip
             out/release/${{ steps.version.outputs.version }}/
           retention-days: 90
-      
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
@@ -104,4 +104,3 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-

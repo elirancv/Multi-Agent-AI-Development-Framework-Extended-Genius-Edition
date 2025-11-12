@@ -2,8 +2,8 @@
 
 from pathlib import Path
 
-from src.orchestrator.report import build_markdown_report
 from src.orchestrator.artifact_sink import persist_artifacts
+from src.orchestrator.report import build_markdown_report
 
 
 def test_markdown_report() -> None:
@@ -73,4 +73,3 @@ def test_artifact_sink_multiple_stages(tmp_path: Path) -> None:
     assert (out / "s2" / "b.txt").exists()
     assert (out / "SUMMARY.md").exists()
     assert (out / "manifest.json").exists()
-

@@ -6,19 +6,18 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
 
-from src.orchestrator.runner import Orchestrator
-from src.orchestrator.runner_parallel import OrchestratorParallel
-from src.orchestrator.factory import agent_factory, advisor_factory
+from src.orchestrator.artifact_sink import persist_artifacts
+from src.orchestrator.factory import advisor_factory, agent_factory
 from src.orchestrator.hooks import PromptRefinerOnFailure
 from src.orchestrator.report import build_markdown_report
-from src.orchestrator.artifact_sink import persist_artifacts
+from src.orchestrator.runner import Orchestrator
+from src.orchestrator.runner_parallel import OrchestratorParallel
 from src.orchestrator.yaml_loader import (
-    YAMLPipelineLoader,
     PipelineValidationError,
+    YAMLPipelineLoader,
 )
-from src.orchestrator.yaml_loader_strict import YAMLPipelineLoaderStrict
 
 
 def parse_kv_pairs(pairs: list[str]) -> Dict[str, Any]:
@@ -143,19 +142,21 @@ Examples:
     )
 
     args = ap.parse_args()
-    
+
     # Handle --version
     if args.version:
         from src import __version__
+
         print(__version__)
         sys.exit(0)
-    
+
     # Pipeline is required for all other operations
     if not args.pipeline:
         ap.error("--pipeline is required (use --version to print version)")
-    
+
     # Setup structured logging if needed
     from src.orchestrator.logging import setup_logging
+
     setup_logging()
 
     # Dry-run mode: validate and exit
@@ -164,18 +165,18 @@ Examples:
 
         try:
             n, names = validate_pipeline_file(args.pipeline)
-            
+
             # Export graph if requested
             if args.export_graph:
                 from src.orchestrator.graph import pipeline_to_dot
                 from src.orchestrator.yaml_loader_strict import YAMLPipelineLoaderStrict
-                
+
                 loader = YAMLPipelineLoaderStrict()
                 steps, _ = loader.load(args.pipeline)
                 dot = pipeline_to_dot(steps)
                 dot.save(args.export_graph)
                 print(f"Graph exported to {args.export_graph}", file=sys.stderr)
-            
+
             print(
                 json.dumps(
                     {
@@ -205,6 +206,7 @@ Examples:
     # Initialize OpenTelemetry if endpoint provided
     if args.otel_endpoint:
         from src.orchestrator.otel import init_otel
+
         init_otel(args.otel_service, args.otel_endpoint)
 
     try:
@@ -220,14 +222,13 @@ Examples:
         post_hooks = []
         if args.refine_on_fail:
             post_hooks.append(
-                PromptRefinerOnFailure(
-                    agent_factory=agent_factory, advisor_factory=advisor_factory
-                )
+                PromptRefinerOnFailure(agent_factory=agent_factory, advisor_factory=advisor_factory)
             )
 
         # Load preset if specified
         if args.preset:
             from src.orchestrator.preset_loader import load_preset
+
             preset_policy = load_preset(args.preset)
             if preset_policy and policy:
                 # Merge preset into policy (pipeline values override preset)
@@ -238,19 +239,21 @@ Examples:
                                 policy.score_thresholds = {}
                             policy.score_thresholds[cat] = threshold
                 # Similar merging for retries, timeouts, etc.
-        
+
         # Create checkpoint store based on CLI flag
         def make_checkpoint_store(kind: str, root: str = "out"):
             """Factory function for checkpoint stores."""
             if kind == "sqlite":
                 from src.orchestrator.checkpoint_sqlite import SQLiteCheckpointStore
+
                 return SQLiteCheckpointStore(db_path=f"{root}/checkpoints.db")
             else:  # fs
                 from src.orchestrator.checkpoint_fs import FileCheckpointStore
+
                 return FileCheckpointStore(root=f"{root}/checkpoints")
-        
+
         checkpoint_store = make_checkpoint_store(args.checkpoint_store, root="out")
-        
+
         # Create orchestrator
         if args.parallel:
             orch = OrchestratorParallel(
@@ -269,28 +272,30 @@ Examples:
             )
             # Apply policy thresholds for sequential orchestrator
             orch.policy = policy
-            
+
             # Load budget from policy if present
             if policy and policy.budget:
                 from src.orchestrator.budget import Budget
+
                 budget_data = policy.budget
                 orch.budget = Budget(
                     max_runtime_sec=budget_data.get("max_runtime_sec"),
                     max_stages=budget_data.get("max_stages"),
                     max_artifacts_bytes=budget_data.get("max_artifacts_bytes"),
                 )
-        
+
         # Apply cache setting from CLI
         orch.use_cache = not args.no_cache
-        
+
         # Resume from checkpoint if requested
         if args.resume_run_id:
             # Use the same checkpoint store as orchestrator
             store = orch.checkpoints if hasattr(orch, "checkpoints") else checkpoint_store
             if store is None:
                 from src.orchestrator.checkpoint_fs import FileCheckpointStore
+
                 store = FileCheckpointStore()
-            
+
             last_key = store.find_last_key(args.resume_run_id)
             if last_key:
                 checkpoint = store.load(last_key)
@@ -299,9 +304,14 @@ Examples:
                     orch.run_id = args.resume_run_id
                     print(f"Resumed from checkpoint: {last_key}", file=sys.stderr)
                 else:
-                    print(f"Warning: No checkpoint found for run_id={args.resume_run_id}", file=sys.stderr)
+                    print(
+                        f"Warning: No checkpoint found for run_id={args.resume_run_id}",
+                        file=sys.stderr,
+                    )
             else:
-                print(f"Warning: No checkpoint found for run_id={args.resume_run_id}", file=sys.stderr)
+                print(
+                    f"Warning: No checkpoint found for run_id={args.resume_run_id}", file=sys.stderr
+                )
 
         # Seed memory from CLI overrides
         if args.mem:
@@ -337,9 +347,7 @@ Examples:
         if args.save_artifacts:
             count = persist_artifacts(result, out_dir="out")
             run_dir = Path("out") / result.get("run_id", "unknown")
-            print(
-                f"\n[INFO] Saved {count} artifacts to: {run_dir}", file=sys.stderr
-            )
+            print(f"\n[INFO] Saved {count} artifacts to: {run_dir}", file=sys.stderr)
             artifacts_saved = True
 
         # Output result
@@ -367,12 +375,14 @@ Examples:
 def clean_command() -> None:
     """Clean artifacts command entry point."""
     from scripts.clean_artifacts import main as clean_main
+
     sys.exit(clean_main())
 
 
 def doctor_command() -> None:
     """Doctor command entry point."""
     from scripts.doctor import main as doctor_main
+
     sys.exit(doctor_main())
 
 
@@ -386,6 +396,5 @@ if __name__ == "__main__":
         elif subcommand == "doctor":
             sys.argv = sys.argv[1:]  # Remove 'doctor' from args
             doctor_command()
-    
-    main()
 
+    main()

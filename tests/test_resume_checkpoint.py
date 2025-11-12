@@ -38,4 +38,3 @@ def test_find_last_key_nonexistent(tmp_path: Path) -> None:
     store = FileCheckpointStore(root=str(tmp_path / "checkpoints"))
     last_key = store.find_last_key("nonexistent")
     assert last_key is None
-

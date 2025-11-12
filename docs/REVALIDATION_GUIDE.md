@@ -112,7 +112,7 @@ If you prefer to update badges manually:
 
 **Issue**: OWNER/REPO not set
 
-**Fix**: 
+**Fix**:
 - Set in `.env` file, OR
 - Set as environment variables, OR
 - Update manually in README.md
@@ -121,7 +121,7 @@ If you prefer to update badges manually:
 
 **Issue**: `dot` command not available
 
-**Fix**: 
+**Fix**:
 - **Windows**: `choco install graphviz` or `scoop install graphviz`
 - **Linux**: `sudo apt-get install graphviz`
 - **macOS**: `brew install graphviz`
@@ -147,4 +147,3 @@ CREATE_TAG=true SIGN_TAG=true TAG_NAME=v1.0.0 ./scripts/commit_push.sh
 ---
 
 **Last Updated**: 2025-01-12
-

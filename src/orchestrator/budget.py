@@ -35,9 +35,7 @@ def enforce_budget(budget: Budget, stats: Dict[str, Any]) -> None:
     if budget.max_stages is not None:
         stages = stats.get("stages", 0)
         if stages > budget.max_stages:
-            raise BudgetExceededError(
-                f"Stage budget exceeded: {stages} > {budget.max_stages}"
-            )
+            raise BudgetExceededError(f"Stage budget exceeded: {stages} > {budget.max_stages}")
 
     if budget.max_artifacts_bytes is not None:
         artifacts_bytes = stats.get("artifacts_bytes", 0)
@@ -52,4 +50,3 @@ def enforce_budget(budget: Budget, stats: Dict[str, Any]) -> None:
             raise BudgetExceededError(
                 f"Runtime budget exceeded: {runtime_sec:.1f}s > {budget.max_runtime_sec}s"
             )
-

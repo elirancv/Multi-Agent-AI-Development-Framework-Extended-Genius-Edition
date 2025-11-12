@@ -1,9 +1,8 @@
 """Test policy version validation."""
 
 import pytest
-import yaml
 
-from src.orchestrator.yaml_loader import YAMLPipelineLoader, PipelineValidationError
+from src.orchestrator.yaml_loader import PipelineValidationError, YAMLPipelineLoader
 
 
 def test_policy_version_defaults_to_1() -> None:
@@ -53,4 +52,3 @@ stages:
     steps, policy = loader.load(yaml_content)
     assert policy.version == 1
     assert policy.score_thresholds["requirements"] == 0.85
-

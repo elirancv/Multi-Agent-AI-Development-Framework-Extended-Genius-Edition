@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeoutError
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import TimeoutError as FutureTimeoutError
 from typing import Callable, TypeVar
 
 T = TypeVar("T")
@@ -33,4 +34,3 @@ def run_with_timeout(fn: Callable[[], T], seconds: float) -> T:
             return fut.result(timeout=seconds)
         except FutureTimeoutError as e:
             raise FutureTimeoutError(f"Operation timed out after {seconds}s") from e
-

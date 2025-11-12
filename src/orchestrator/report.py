@@ -28,9 +28,7 @@ def build_markdown_report(
     lines: List[str] = []
     lines.append("# Pipeline Run Report")
     lines.append(f"- **Run ID:** `{run_id}`")
-    lines.append(
-        f"- **Generated:** {datetime.now(timezone.utc).isoformat(timespec='seconds')}"
-    )
+    lines.append(f"- **Generated:** {datetime.now(timezone.utc).isoformat(timespec='seconds')}")
     lines.append("")
 
     lines.append("## Summary")
@@ -46,7 +44,7 @@ def build_markdown_report(
 
     # Collect all suggestions for top suggestions section
     all_suggestions: List[Dict[str, Any]] = []
-    
+
     lines.append("\n## Stages")
     for h in history:
         stage = h["stage"]
@@ -54,7 +52,7 @@ def build_markdown_report(
         ok = "[PASS]" if h.get("approved") else "[FAIL]"
         cat = h.get("category") or "default"
         error_reason = h.get("error_reason")
-        
+
         # Get duration from memory or checkpoint
         stage_metadata = mem.get(f"{stage}.metadata", {})
         duration_ms = stage_metadata.get("duration_ms")
@@ -62,7 +60,7 @@ def build_markdown_report(
             # Try to get from checkpoint if available
             checkpoint_extra = mem.get(f"{stage}.checkpoint_extra", {})
             duration_ms = checkpoint_extra.get("duration_ms")
-        
+
         status_line = f"### {ok} {stage}  —  score: **{score:.2f}**  |  category: `{cat}`"
         if duration_ms:
             status_line += f"  |  duration: **{duration_ms} ms**"
@@ -83,7 +81,7 @@ def build_markdown_report(
                 else:
                     link = f"`{name}`"
                 lines.append(f"- {link} · type=`{art_type}`")
-                
+
                 # Show diff if previous content exists (from checkpoint/resume)
                 current_content = mem.get(f"{stage}.content", "")
                 previous_content = mem.get(f"{stage}.previous_content")
@@ -96,9 +94,7 @@ def build_markdown_report(
         rev = mem.get(f"{stage}.review") or {}
         if rev:
             lines.append("**Review:**")
-            lines.append(
-                f"- approved={rev.get('approved')}  |  score={rev.get('score')}"
-            )
+            lines.append(f"- approved={rev.get('approved')}  |  score={rev.get('score')}")
             crit = rev.get("critical_issues") or []
             sug = rev.get("suggestions") or []
             if crit:
@@ -120,7 +116,8 @@ def build_markdown_report(
         # Sort by score (highest first) and take top 5
         sorted_suggestions = sorted(all_suggestions, key=lambda x: x["score"], reverse=True)[:5]
         for i, sug in enumerate(sorted_suggestions, 1):
-            lines.append(f"{i}. **{sug['stage']}** (score: {sug['score']:.2f}): {sug['suggestion']}")
+            lines.append(
+                f"{i}. **{sug['stage']}** (score: {sug['score']:.2f}): {sug['suggestion']}"
+            )
 
     return "\n".join(lines)
-

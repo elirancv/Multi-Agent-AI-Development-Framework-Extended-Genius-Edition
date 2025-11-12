@@ -69,4 +69,3 @@ Security updates are released as patch versions (e.g., 0.9.1, 0.9.2). Always upd
 ## Contact
 
 For security-related questions or concerns, contact: [security@yourdomain.com]
-

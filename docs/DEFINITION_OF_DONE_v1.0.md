@@ -154,4 +154,3 @@ When all items are checked:
 ---
 
 **Note**: This checklist should be completed before marking v1.0.0 as "released" in GitHub.
-

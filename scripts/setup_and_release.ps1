@@ -64,4 +64,3 @@ Write-Host "Next steps:"
 Write-Host "  1. Push to GitHub: git push -u origin main"
 Write-Host "  2. Review: out/validation/FINAL_VALIDATION.md"
 Write-Host "  3. Release: .\scripts\release_all.ps1"
-

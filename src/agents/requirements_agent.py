@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from typing import Any, Dict, List
+
 from src.core.base import BaseFunctionalAgent
-from src.core.types import AgentOutput, Artifact, AgentMetadata
+from src.core.types import AgentMetadata, AgentOutput, Artifact
 
 
 class RequirementsDraftingAgent(BaseFunctionalAgent):
@@ -49,4 +50,3 @@ class RequirementsDraftingAgent(BaseFunctionalAgent):
         )
 
         return AgentOutput(content=content, artifacts=artifacts, metadata=meta)
-

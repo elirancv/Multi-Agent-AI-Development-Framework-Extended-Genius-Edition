@@ -36,4 +36,3 @@ echo "Next steps:"
 echo "  1. Create GitHub Release: https://github.com/<owner>/<repo>/releases/new"
 echo "  2. Copy body from: docs/GITHUB_RELEASE_SHORT_v1.0.0.md"
 echo "  3. Create v1.1 milestone and issues (see scripts/create_v1.1_issues.sh)"
-

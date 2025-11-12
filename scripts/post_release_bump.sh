@@ -36,4 +36,3 @@ echo "Next steps:"
 echo "  git add -A"
 echo "  git commit -m 'chore: bump version to $NEXT_VERSION'"
 echo "  git push"
-

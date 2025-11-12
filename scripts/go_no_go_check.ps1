@@ -61,4 +61,3 @@ if (Test-Path "tmp_go_nogo/pipeline/test-go-nogo.yaml") {
 
 Write-Host ""
 Write-Host "=== All checks passed! Ready for release. ===" -ForegroundColor Green
-

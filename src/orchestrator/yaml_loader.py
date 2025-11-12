@@ -4,9 +4,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Set, Tuple
+
 import yaml
+
+from .factory import CORE_ADVISORS, CORE_AGENTS
 from .runner import PipelineStep
-from .factory import CORE_AGENTS, CORE_ADVISORS
 
 
 class PipelineValidationError(Exception):
@@ -30,10 +32,14 @@ class Policy:
 class YAMLPipelineLoader:
     """Loads a pipeline from YAML with validation and dependency resolution."""
 
-    def __init__(self, agent_registry: Optional[Dict[str, Any]] = None, advisor_registry: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(
+        self,
+        agent_registry: Optional[Dict[str, Any]] = None,
+        advisor_registry: Optional[Dict[str, Any]] = None,
+    ) -> None:
         """
         Initialize loader with agent and advisor registries for validation.
-        
+
         Args:
             agent_registry: Dict mapping agent names to classes/types (defaults to CORE_AGENTS)
             advisor_registry: Dict mapping advisor names to classes/types (defaults to CORE_ADVISORS)
@@ -44,7 +50,7 @@ class YAMLPipelineLoader:
     def load(self, yaml_content: str) -> Tuple[List[PipelineStep], Policy]:
         """
         Load pipeline from YAML string with dependencies and policy.
-        
+
         Returns:
             Tuple of (steps in topological order, policy)
         """
@@ -55,13 +61,13 @@ class YAMLPipelineLoader:
         # Extract policy
         policy_section = data.get("policy") or {}
         policy_version = policy_section.get("version", 1)
-        
+
         # Validate policy version
         if policy_version != 1:
             raise PipelineValidationError(
                 f"Unsupported policy.version={policy_version}. Only version 1 is supported."
             )
-        
+
         policy_data = policy_section.get("score_thresholds", {})
         advisors_data = policy_section.get("advisors", {})
         timeouts_data = policy_section.get("timeouts", {})
@@ -131,15 +137,11 @@ class YAMLPipelineLoader:
             name = s["name"]
             deps = s.get("depends_on") or []
             if not isinstance(deps, list):
-                raise PipelineValidationError(
-                    f"Stage '{name}': 'depends_on' must be a list"
-                )
+                raise PipelineValidationError(f"Stage '{name}': 'depends_on' must be a list")
 
             for d in deps:
                 if d not in names:
-                    raise PipelineValidationError(
-                        f"Stage '{name}': unknown dependency '{d}'"
-                    )
+                    raise PipelineValidationError(f"Stage '{name}': unknown dependency '{d}'")
                 graph[d].append(name)
                 indeg[name] += 1
 
@@ -176,5 +178,5 @@ class YAMLPipelineLoader:
 
     def load_from_file(self, filepath: str) -> Tuple[List[PipelineStep], Policy]:
         """Load pipeline from YAML file."""
-        with open(filepath, "r", encoding="utf-8") as f:
+        with open(filepath, encoding="utf-8") as f:
             return self.load(f.read())

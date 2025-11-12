@@ -1,6 +1,6 @@
 """Tests for artifact diff utilities."""
 
-from src.orchestrator.artifact_diff import diff_text, diff_summary
+from src.orchestrator.artifact_diff import diff_summary, diff_text
 
 
 def test_diff_text_same():
@@ -25,4 +25,3 @@ def test_diff_summary():
     new = "line1\nline2_modified\nline3\nline4"
     added, removed = diff_summary(old, new)
     assert added > 0 or removed > 0
-

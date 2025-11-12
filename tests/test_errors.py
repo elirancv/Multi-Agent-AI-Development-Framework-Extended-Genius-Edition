@@ -1,11 +1,11 @@
 """Test orchestrator error taxonomy."""
 
 from src.orchestrator.errors import (
-    OrchestratorError,
-    TimeoutOrchestratorError,
-    InvalidOutputError,
     AdvisorRejectError,
     ExhaustedRetriesError,
+    InvalidOutputError,
+    OrchestratorError,
+    TimeoutOrchestratorError,
 )
 
 
@@ -31,4 +31,3 @@ def test_error_instantiation() -> None:
     error = TimeoutOrchestratorError("Custom timeout message")
     assert str(error) == "Custom timeout message"
     assert error.reason == "timeout"
-

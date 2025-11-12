@@ -52,4 +52,3 @@ Add any other context, screenshots, or logs about the problem here.
 - [ ] I have included all relevant error output
 - [ ] I have tested with the latest version
 - [ ] I have included environment details
-

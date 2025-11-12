@@ -9,20 +9,20 @@ jobs:
   cleanup:
     name: Clean Old Artifacts
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      
+
       - name: Clean artifacts (dry-run)
         id: dry-run
         run: |
@@ -32,14 +32,14 @@ jobs:
             --keep-latest 20 \
             --dry-run \
             --json > cleanup-plan.json || true
-      
+
       - name: Review cleanup plan
         run: |
           if [ -f cleanup-plan.json ]; then
             echo "Cleanup plan:"
             cat cleanup-plan.json
           fi
-      
+
       - name: Clean artifacts (actual)
         if: github.event_name == 'schedule' || github.event.inputs.confirm == 'true'
         run: |
@@ -48,7 +48,7 @@ jobs:
             --max-size 5GB \
             --keep-latest 20 \
             --json > cleanup-result.json || true
-      
+
       - name: Upload cleanup report
         uses: actions/upload-artifact@v4
         if: always()
@@ -59,4 +59,3 @@ jobs:
             cleanup-result.json
           retention-days: 30
           if-no-files-found: ignore
-

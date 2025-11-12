@@ -2,7 +2,7 @@
 
 import pytest
 
-from src.orchestrator.graph import pipeline_to_dot, GRAPHVIZ_AVAILABLE
+from src.orchestrator.graph import GRAPHVIZ_AVAILABLE, pipeline_to_dot
 from src.orchestrator.runner_parallel import PipelineStep
 
 
@@ -39,11 +39,6 @@ def test_pipeline_to_dot() -> None:
 def test_pipeline_to_dot_requires_graphviz() -> None:
     """Test that graph generation requires graphviz."""
     if not GRAPHVIZ_AVAILABLE:
-        steps = [
-            PipelineStep(
-                stage="stage1", agent="Agent1", advisor="Advisor1", task="task1"
-            )
-        ]
+        steps = [PipelineStep(stage="stage1", agent="Agent1", advisor="Advisor1", task="task1")]
         with pytest.raises(ImportError, match="graphviz"):
             pipeline_to_dot(steps)
-

@@ -52,4 +52,3 @@ def test_backoff_policy_sleep() -> None:
 
     # Should sleep approximately base * factor^(attempt-1) = 0.1 * 2^0 = 0.1
     assert 0.09 <= elapsed <= 0.15
-

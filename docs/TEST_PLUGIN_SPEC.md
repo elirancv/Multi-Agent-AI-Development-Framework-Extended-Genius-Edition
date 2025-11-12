@@ -44,10 +44,10 @@ from src.core.base import BaseFunctionalAgent
 
 class TestAgent(BaseFunctionalAgent):
     """Minimal test agent for CI validation."""
-    
+
     name = "TestAgent"
     version = "0.1.0"
-    
+
     def process(self, task: str, context: dict) -> AgentOutput:
         return AgentOutput(
             content=f"Test output for: {task}",
@@ -66,9 +66,9 @@ from src.core.base import BaseAdvisor
 
 class TestAdvisor(BaseAdvisor):
     """Minimal test advisor for CI validation."""
-    
+
     name = "TestAdvisor"
-    
+
     def review(self, output: AgentOutput, task: str, context: dict) -> AdvisorReview:
         return {
             "score": 1.0,
@@ -106,27 +106,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Checkout framework
         uses: actions/checkout@v4
         with:
           repository: your-org/AgentsSystemV2
           path: framework
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      
+
       - name: Install framework
         run: |
           cd framework
           pip install -e .
-      
+
       - name: Install test plugin
         run: pip install -e .
-      
+
       - name: Test plugin discovery
         run: |
           python -c "
@@ -135,7 +135,7 @@ jobs:
           assert 'test.TestAgent' in agents, 'TestAgent not found'
           print('✅ Plugin discovery works')
           "
-      
+
       - name: Test factory integration
         run: |
           python -c "
@@ -182,7 +182,7 @@ def test_factory_integration():
     """Test that factory can create plugin instances."""
     agent = agent_factory("test.TestAgent")
     assert isinstance(agent, TestAgent)
-    
+
     advisor = advisor_factory("test.TestAdvisor")
     assert isinstance(advisor, TestAdvisor)
 
@@ -191,13 +191,13 @@ def test_plugin_functionality():
     """Test that plugin works end-to-end."""
     agent = agent_factory("test.TestAgent")
     output = agent.process("test task", {})
-    
+
     assert output.content
     assert output.metadata.get("test") is True
-    
+
     advisor = advisor_factory("test.TestAdvisor")
     review = advisor.review(output, "test task", {})
-    
+
     assert review["approved"] is True
     assert review["score"] == 1.0
 ```
@@ -222,16 +222,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install framework
         run: pip install -e .
-      
+
       - name: Install test plugin
         run: |
           git clone <test-plugin-repo> test-plugin
           cd test-plugin
           pip install -e .
-      
+
       - name: Validate plugin loading
         run: |
           python -c "
@@ -260,4 +260,3 @@ jobs:
 
 - [Plugin Template](PLUGIN_TEMPLATE.md)
 - [Plugin API](PLUGIN_API.md)
-

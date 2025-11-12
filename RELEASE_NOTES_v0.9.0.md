@@ -1,6 +1,6 @@
 # Release Notes: v0.9.0 – Production-ready Orchestrator
 
-**Release Date:** 2025-01-12  
+**Release Date:** 2025-01-12
 **Status:** Stable
 
 ## Highlights
@@ -168,4 +168,3 @@ See [v1.0 Roadmap](https://github.com/your-org/AgentsSystemV2/issues?q=is%3Aopen
 ---
 
 **Full Changelog**: [CHANGELOG.md](CHANGELOG.md)
-

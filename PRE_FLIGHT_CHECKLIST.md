@@ -110,4 +110,3 @@ See [POST_RELEASE_CHECKLIST.md](POST_RELEASE_CHECKLIST.md) for:
 ---
 
 **Ready to release!** 🎉
-

@@ -23,7 +23,7 @@ def seed_for(run_id: str, stage: str) -> None:
         run_id: Run identifier
         stage: Stage name
     """
-    h = hashlib.sha256(f"{run_id}:{stage}".encode("utf-8")).digest()
+    h = hashlib.sha256(f"{run_id}:{stage}".encode()).digest()
     seed = int.from_bytes(h[:8], "little") & 0x7FFFFFFF
     random.seed(seed)
     if NUMPY_AVAILABLE:
@@ -31,4 +31,3 @@ def seed_for(run_id: str, stage: str) -> None:
             np.random.seed(seed)
         except Exception:
             pass
-

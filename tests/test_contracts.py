@@ -1,6 +1,6 @@
 """Test agent output contracts."""
 
-from src.core.types import Artifact, AgentMetadata, AgentOutput
+from src.core.types import AgentMetadata, AgentOutput, Artifact
 
 
 def test_agent_output_contract() -> None:
@@ -12,9 +12,5 @@ def test_agent_output_contract() -> None:
     as_dict = out.to_dict()
 
     assert "content" in as_dict and isinstance(as_dict["content"], str)
-    assert (
-        isinstance(as_dict["artifacts"], list)
-        and as_dict["artifacts"][0]["name"] == "file.md"
-    )
+    assert isinstance(as_dict["artifacts"], list) and as_dict["artifacts"][0]["name"] == "file.md"
     assert as_dict["metadata"]["agent_name"] == "X"
-

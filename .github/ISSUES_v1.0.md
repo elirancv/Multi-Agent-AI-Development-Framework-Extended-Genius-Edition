@@ -283,7 +283,7 @@ presets:
     decision: average
     min_score: 0.7
     weights: {}
-  
+
   production:
     advisors: [ProductManagerAdvisor, CodeReviewAdvisor, SecurityAdvisor, ...]
     decision: average
@@ -389,4 +389,3 @@ Each pipeline page should include:
 ---
 
 **Total Effort Estimate**: 7-10 days for P0+P1, 2-4 days for P2 (optional)
-

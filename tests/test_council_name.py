@@ -1,8 +1,8 @@
 """Test that AdvisorCouncil has name attribute."""
 
+from src.core.types import AgentMetadata, AgentOutput
 from src.orchestrator.council import AdvisorCouncil
 from src.orchestrator.factory import advisor_factory
-from src.core.types import AgentOutput, AgentMetadata
 
 
 def test_council_has_name_attribute() -> None:
@@ -31,9 +31,6 @@ def test_council_name_in_logging() -> None:
     assert advisor_name == "AdvisorCouncil"
 
     # Test review still works
-    output = AgentOutput(
-        content="test", metadata=AgentMetadata(agent_name="TestAgent")
-    )
+    output = AgentOutput(content="test", metadata=AgentMetadata(agent_name="TestAgent"))
     review = council.review(output=output, task="test", context={})
     assert "score" in review
-

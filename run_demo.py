@@ -1,7 +1,7 @@
 """Demo script for running the multi-agent pipeline."""
 
+from src.orchestrator.factory import advisor_factory, agent_factory
 from src.orchestrator.runner import Orchestrator
-from src.orchestrator.factory import agent_factory, advisor_factory
 from src.orchestrator.yaml_loader import YAMLPipelineLoader
 
 
@@ -51,4 +51,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

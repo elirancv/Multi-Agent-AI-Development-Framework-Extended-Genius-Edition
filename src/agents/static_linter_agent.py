@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any, Dict
 
 from src.core.base import BaseFunctionalAgent
-from src.core.types import AgentOutput, Artifact, AgentMetadata
+from src.core.types import AgentMetadata, AgentOutput, Artifact
 
 
 class StaticLinterAgent(BaseFunctionalAgent):
@@ -62,4 +62,3 @@ class StaticLinterAgent(BaseFunctionalAgent):
             artifacts=artifacts,
             metadata=metadata,
         )
-

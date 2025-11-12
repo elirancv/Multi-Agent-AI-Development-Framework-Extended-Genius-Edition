@@ -72,4 +72,3 @@ Welcome to the Multi-Agent System documentation. This index provides quick acces
 - **Set up CI/CD** → [Smoke Tests](SMOKE_TESTS.md)
 - **Understand the architecture** → [README](README.md)
 - **Report a bug** → [Security](SECURITY.md) or open an issue
-

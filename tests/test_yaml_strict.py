@@ -1,6 +1,7 @@
 """Test strict YAML loader with Pydantic validation."""
 
 import pytest
+
 from src.orchestrator.yaml_loader_strict import YAMLPipelineLoaderStrict
 
 
@@ -16,6 +17,7 @@ def test_load_valid_pipeline() -> None:
 def test_validate_unique_stage_names() -> None:
     """Test that duplicate stage names are rejected."""
     import tempfile
+
     import yaml
 
     invalid_yaml = {
@@ -52,6 +54,7 @@ def test_validate_unique_stage_names() -> None:
 def test_validate_max_retries_non_negative() -> None:
     """Test that negative max_retries is rejected."""
     import tempfile
+
     import yaml
 
     invalid_yaml = {
@@ -78,4 +81,3 @@ def test_validate_max_retries_non_negative() -> None:
         import os
 
         os.unlink(temp_path)
-

@@ -56,4 +56,3 @@ def retry(policy: BackoffPolicy, fn: Callable[[], T]) -> T:
             policy.sleep(attempt)
 
     assert False, "unreachable"
-

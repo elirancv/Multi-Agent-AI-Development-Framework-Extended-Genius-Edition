@@ -158,8 +158,8 @@ git push origin main --tags
 
 ## 📝 GitHub Release
 
-**Tag**: `v1.0.0`  
-**Title**: `Release v1.0.0`  
+**Tag**: `v1.0.0`
+**Title**: `Release v1.0.0`
 **Body**: Use `docs/GITHUB_RELEASE_SHORT_v1.0.0.md` (Ultra-Short Version) or full `GITHUB_RELEASE_BODY_v1.0.0.md`
 
 **Assets**:
@@ -207,4 +207,3 @@ git push origin main --tags
 **Status**: 🟢 **READY TO RELEASE**
 
 All files created, updated, and verified. Proceed with release commands above.
-

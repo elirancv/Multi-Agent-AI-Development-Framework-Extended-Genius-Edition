@@ -35,23 +35,23 @@ flags:
     paths:
       - tests/
     carryforward: true
-  
+
   # Component flags for better coverage tracking
   agents:
     paths:
       - src/agents/
     carryforward: true
-  
+
   advisors:
     paths:
       - src/advisors/
     carryforward: true
-  
+
   orchestrator:
     paths:
       - src/orchestrator/
     carryforward: true
-  
+
   core:
     paths:
       - src/core/
@@ -67,4 +67,3 @@ ignore:
   - "*.toml"
   - "*.txt"
   - "*.json"
-

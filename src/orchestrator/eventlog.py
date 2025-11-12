@@ -36,4 +36,3 @@ class JsonlEventLog:
         rec.update(data)
         with self._p.open("a", encoding="utf-8") as f:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
-

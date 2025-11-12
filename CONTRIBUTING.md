@@ -189,4 +189,3 @@ Before releasing a new version:
 - Review existing code for patterns
 
 Thank you for contributing! 🎉
-

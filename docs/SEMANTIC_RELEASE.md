@@ -119,4 +119,3 @@ chore: update dependencies to latest versions
 - [Conventional Commits](https://www.conventionalcommits.org/)
 - [Semantic Versioning](https://semver.org/)
 - [Keep a Changelog](https://keepachangelog.com/)
-

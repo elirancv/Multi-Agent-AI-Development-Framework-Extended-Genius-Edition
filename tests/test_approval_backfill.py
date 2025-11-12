@@ -27,15 +27,11 @@ def test_markdown_report_structure():
             "total_stages": 1,
             "approved": 1,
             "rejected": 0,
-        }
+        },
     }
-    
-    md = build_markdown_report(
-        dummy_result,
-        artifacts_saved=False,
-        top_suggestions=False
-    )
-    
+
+    md = build_markdown_report(dummy_result, artifacts_saved=False, top_suggestions=False)
+
     # Check structure
     assert isinstance(md, str)
     assert "test-run-123" in md or "test_stage" in md
@@ -52,19 +48,13 @@ def test_markdown_report_with_artifacts():
                 "category": "requirements",
                 "approved": True,
                 "score": 0.95,
-                "artifacts": {
-                    "test.md": {"size": 100}
-                },
+                "artifacts": {"test.md": {"size": 100}},
             }
         ],
     }
-    
-    md = build_markdown_report(
-        dummy_result,
-        artifacts_saved=True,
-        top_suggestions=False
-    )
-    
+
+    md = build_markdown_report(dummy_result, artifacts_saved=True, top_suggestions=False)
+
     assert "artifact" in md.lower() or "test.md" in md
 
 
@@ -80,10 +70,10 @@ def test_json_output_structure():
             }
         ],
     }
-    
+
     json_str = json.dumps(dummy_result, indent=2)
     data = json.loads(json_str)
-    
+
     assert "run_id" in data
     assert "history" in data
     assert isinstance(data["history"], list)
@@ -95,21 +85,26 @@ def test_eventlog_structure(tmp_path):
     # This would test actual eventlog writing
     # For now, just verify structure expectations
     eventlog_path = tmp_path / "events.jsonl"
-    
+
     events = [
         {"event": "stage_start", "stage": "test", "timestamp": "2025-01-01T00:00:00Z"},
-        {"event": "stage_complete", "stage": "test", "score": 0.95, "timestamp": "2025-01-01T00:00:01Z"},
+        {
+            "event": "stage_complete",
+            "stage": "test",
+            "score": 0.95,
+            "timestamp": "2025-01-01T00:00:01Z",
+        },
     ]
-    
+
     with open(eventlog_path, "w") as f:
         for event in events:
             f.write(json.dumps(event) + "\n")
-    
+
     # Verify structure
     with open(eventlog_path) as f:
         lines = f.readlines()
         assert len(lines) == 2
-        
+
         for line in lines:
             data = json.loads(line)
             assert "event" in data
@@ -130,10 +125,9 @@ def test_report_consistency():
             }
         ],
     }
-    
+
     md1 = build_markdown_report(dummy_result, artifacts_saved=False, top_suggestions=False)
     md2 = build_markdown_report(dummy_result, artifacts_saved=False, top_suggestions=False)
-    
+
     # Should be identical for same input
     assert md1 == md2
-

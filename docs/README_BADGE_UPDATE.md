@@ -46,4 +46,3 @@ After updating:
 1. View README on GitHub
 2. Click badges to verify they link correctly
 3. Check Codecov badge shows coverage (after first CI run)
-

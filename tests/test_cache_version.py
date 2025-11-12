@@ -27,4 +27,3 @@ def test_cache_separates_by_version() -> None:
     # Should retrieve correct version
     assert cache.get("Agent", "stage", "task", {}, agent_version="0.1.0") == output_v1
     assert cache.get("Agent", "stage", "task", {}, agent_version="0.2.0") == output_v2
-

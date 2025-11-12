@@ -64,4 +64,3 @@ stages:
 
     with pytest.raises(PipelineValidationError):
         validate_pipeline_file(str(p))
-

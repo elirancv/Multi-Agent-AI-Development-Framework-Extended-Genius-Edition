@@ -1,7 +1,7 @@
 """Test orchestrator pipeline execution."""
 
+from src.orchestrator.factory import advisor_factory, agent_factory
 from src.orchestrator.runner import Orchestrator, PipelineStep
-from src.orchestrator.factory import agent_factory, advisor_factory
 
 
 def test_pipeline_approves_requirements() -> None:
@@ -25,4 +25,3 @@ def test_pipeline_approves_requirements() -> None:
 
     assert hist["approved"] is True
     assert hist["score"] >= 0.80
-

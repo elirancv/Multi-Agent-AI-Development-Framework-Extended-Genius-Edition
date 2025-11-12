@@ -123,4 +123,3 @@ https://www.contributor-covenant.org/faq
 
 [homepage]: https://www.contributor-covenant.org
 [Mozilla CoC]: https://github.com/mozilla/diversity
-

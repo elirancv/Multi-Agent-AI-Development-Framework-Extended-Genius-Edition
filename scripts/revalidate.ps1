@@ -3,6 +3,14 @@
 
 $ErrorActionPreference = "Continue"
 
+# Add Graphviz to PATH if installed but not in PATH
+$graphvizPaths = @("C:\Program Files\Graphviz\bin", "C:\Program Files (x86)\Graphviz\bin")
+foreach ($path in $graphvizPaths) {
+    if (Test-Path $path -and $env:PATH -notlike "*$path*") {
+        $env:PATH = "$path;$env:PATH"
+    }
+}
+
 # Load owner/repo from .env if exists
 $Owner = ""
 $Repo = ""
@@ -88,9 +96,9 @@ Write-Host "== STEP 7: Full validation report (re-run) ==" -ForegroundColor Cyan
 python scripts/doctor.py --verbose | Tee-Object -FilePath out/validation/doctor_output.txt
 
 if (Get-Command coverage -ErrorAction SilentlyContinue) {
-    coverage run -m pytest -q
-    coverage xml -o coverage.xml
-    coverage report | Tee-Object -FilePath out/validation/coverage_report.txt
+python -m coverage run -m pytest -q 2>&1 | Out-Null
+python -m coverage xml -o coverage.xml 2>&1 | Out-Null
+python -m coverage report 2>&1 | Out-Null | Tee-Object -FilePath out/validation/coverage_report.txt
 } else {
     Write-Host "  ⚠️  coverage not available"
 }
@@ -122,4 +130,3 @@ if ($exitCode -eq 0) {
 }
 
 exit $exitCode
-

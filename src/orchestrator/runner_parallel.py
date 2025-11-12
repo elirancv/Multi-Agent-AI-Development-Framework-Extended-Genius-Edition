@@ -2,17 +2,18 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Sequence, Set
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import logging
 import time
 import uuid
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import dataclass, field
+from typing import Any, Callable, Dict, List, Optional, Sequence, Set
 
-from src.core.base import BaseFunctionalAgent, BaseAdvisor
-from src.core.types import AgentOutput
+from src.core.base import BaseAdvisor, BaseFunctionalAgent
 from src.core.memory import SharedMemory
-from src.core.resume import CheckpointStore, Checkpoint
+from src.core.resume import Checkpoint, CheckpointStore
+from src.core.types import AgentOutput
+
 from .hooks import PostStepHook
 
 logger = logging.getLogger(__name__)
@@ -51,7 +52,7 @@ class OrchestratorParallel:
     ) -> None:
         """
         Initialize parallel orchestrator.
-        
+
         Args:
             agent_factory: Factory function for creating agents
             advisor_factory: Factory function for creating advisors
@@ -108,15 +109,11 @@ class OrchestratorParallel:
             agent.validate_output(output)
             latest_output = output
 
-            review = advisor.review(
-                output=output, task=task, context=self.memory.to_dict()
-            )
+            review = advisor.review(output=output, task=task, context=self.memory.to_dict())
             latest_review = review
 
             if advisor.gate(review, agent.min_advisor_score):
-                logger.info(
-                    f"[{step.stage}] Approved score={review['score']:.2f}"
-                )
+                logger.info(f"[{step.stage}] Approved score={review['score']:.2f}")
                 break
 
             logger.warning(
@@ -139,9 +136,7 @@ class OrchestratorParallel:
             self.memory.update(
                 {
                     f"{step.stage}.content": latest_output.content,
-                    f"{step.stage}.artifacts": [
-                        a.to_dict() for a in latest_output.artifacts
-                    ],
+                    f"{step.stage}.artifacts": [a.to_dict() for a in latest_output.artifacts],
                     f"{step.stage}.metadata": latest_output.metadata.to_dict(),
                     f"{step.stage}.review": latest_review,
                 }
@@ -162,9 +157,7 @@ class OrchestratorParallel:
             "stage": step.stage,
             "agent": step.agent,
             "advisor": step.advisor,
-            "approved": bool(
-                latest_review and latest_review.get("approved", False)
-            ),
+            "approved": bool(latest_review and latest_review.get("approved", False)),
             "score": float(latest_review["score"]) if latest_review else 0.0,
             "category": step.category or "default",
         }
@@ -178,13 +171,13 @@ class OrchestratorParallel:
     def run_waves(self, steps: List[PipelineStep]) -> Dict[str, Any]:
         """
         Execute pipeline steps in dependency waves (parallel within wave).
-        
+
         Args:
             steps: List of pipeline steps with dependencies
-            
+
         Returns:
             Dict with run_id, history, and memory snapshot
-            
+
         Raises:
             RuntimeError: If cyclic or unsatisfied dependencies detected
         """
@@ -194,7 +187,7 @@ class OrchestratorParallel:
         edges: Dict[str, List[str]] = {s.stage: [] for s in steps}
 
         for s in steps:
-            for d in (s.depends_on or []):
+            for d in s.depends_on or []:
                 indeg[s.stage] += 1
                 edges.setdefault(d, []).append(s.stage)
 
@@ -226,13 +219,10 @@ class OrchestratorParallel:
 
         if len(visited) != len(steps):
             missing = [s.stage for s in steps if s.stage not in visited]
-            raise RuntimeError(
-                f"Cyclic or unsatisfied dependencies for: {missing}"
-            )
+            raise RuntimeError(f"Cyclic or unsatisfied dependencies for: {missing}")
 
         return {
             "run_id": self.run_id,
             "history": history,
             "memory": self.memory.to_dict(),
         }
-

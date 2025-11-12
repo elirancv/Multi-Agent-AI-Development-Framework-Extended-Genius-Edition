@@ -44,4 +44,3 @@ def test_checkpoint_key_sanitization(tmp_path: Path) -> None:
 
     # Should create file with __ instead of :
     assert (tmp_path / "checkpoints" / "run__id__with__colons.json").exists()
-

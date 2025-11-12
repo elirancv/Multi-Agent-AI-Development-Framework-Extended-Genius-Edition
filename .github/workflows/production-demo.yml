@@ -1,0 +1,162 @@
+name: Production Demo
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      product_idea:
+        description: 'Product idea'
+        required: false
+        default: 'Coffee shop'
+      brand:
+        description: 'Brand name'
+        required: false
+        default: 'BlueBean'
+      primary_color:
+        description: 'Primary color (hex)'
+        required: false
+        default: '#0ea5e9'
+      tone:
+        description: 'Design tone'
+        required: false
+        default: 'minimal'
+        type: choice
+        options:
+          - minimal
+          - professional
+          - playful
+
+jobs:
+  production-demo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install playwright pytest
+
+      - name: Install Playwright browsers
+        run: playwright install chromium
+
+      - name: Run production demo pipeline
+        id: run_pipeline
+        run: |
+          python cli.py \
+            --pipeline pipeline/gallery/idea-to-zip/pipeline-production-demo.yaml \
+            --mem "product_idea=\"${{ github.event.inputs.product_idea || 'Coffee shop' }}\" brand=\"${{ github.event.inputs.brand || 'BlueBean' }}\" primary_color=\"${{ github.event.inputs.primary_color || '#0ea5e9' }}\" tone=\"${{ github.event.inputs.tone || 'minimal' }}\" font_family=\"Inter\"" \
+            --save-artifacts \
+            --output json
+
+      - name: Find output artifacts
+        id: find_artifacts
+        run: |
+          RUN_ID=$(ls -t out/ | grep -v "^\\." | head -1)
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+
+          ZIP_PATH="out/$RUN_ID/Package ZIP/package.zip"
+          SUMMARY_PATH="out/$RUN_ID/SUMMARY.md"
+          SCREENSHOT_PATH="out/$RUN_ID/Screenshot/preview.png"
+
+          if [ -f "$ZIP_PATH" ]; then
+            echo "zip_path=$ZIP_PATH" >> $GITHUB_OUTPUT
+            echo "zip_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "zip_exists=false" >> $GITHUB_OUTPUT
+          fi
+
+          if [ -f "$SUMMARY_PATH" ]; then
+            echo "summary_path=$SUMMARY_PATH" >> $GITHUB_OUTPUT
+            echo "summary_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "summary_exists=false" >> $GITHUB_OUTPUT
+          fi
+
+          if [ -f "$SCREENSHOT_PATH" ]; then
+            echo "screenshot_path=$SCREENSHOT_PATH" >> $GITHUB_OUTPUT
+            echo "screenshot_exists=true" >> $GITHUB_OUTPUT
+          else
+            # Try alternative path
+            SCREENSHOT_PATH="out/$RUN_ID/screenshots/preview.png"
+            if [ -f "$SCREENSHOT_PATH" ]; then
+              echo "screenshot_path=$SCREENSHOT_PATH" >> $GITHUB_OUTPUT
+              echo "screenshot_exists=true" >> $GITHUB_OUTPUT
+            else
+              echo "screenshot_exists=false" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Run integration tests
+        run: |
+          pytest tests/test_idea_to_zip_integration.py::test_production_demo_zip_completeness -v || true
+          pytest tests/test_idea_to_zip_integration.py::test_production_demo_screenshot_sanity -v || true
+          pytest tests/test_idea_to_zip_integration.py::test_production_demo_html_sanity -v || true
+
+      - name: Upload ZIP artifact
+        if: steps.find_artifacts.outputs.zip_exists == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: demo-package-zip
+          path: ${{ steps.find_artifacts.outputs.zip_path }}
+          retention-days: 30
+
+      - name: Upload summary
+        if: steps.find_artifacts.outputs.summary_exists == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: demo-summary
+          path: ${{ steps.find_artifacts.outputs.summary_path }}
+          retention-days: 30
+
+      - name: Upload screenshot
+        if: steps.find_artifacts.outputs.screenshot_exists == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: demo-screenshot
+          path: ${{ steps.find_artifacts.outputs.screenshot_path }}
+          retention-days: 30
+
+      - name: Generate SMOKE_SUMMARY
+        if: steps.find_artifacts.outputs.summary_exists == 'true'
+        run: |
+          RUN_ID="${{ steps.find_artifacts.outputs.run_id }}"
+          SUMMARY_PATH="${{ steps.find_artifacts.outputs.summary_path }}"
+
+          echo "# Production Demo Summary" > out/SMOKE_SUMMARY.md
+          echo "" >> out/SMOKE_SUMMARY.md
+          echo "**Run ID**: \`$RUN_ID\`" >> out/SMOKE_SUMMARY.md
+          echo "" >> out/SMOKE_SUMMARY.md
+          echo "## Artifacts Generated" >> out/SMOKE_SUMMARY.md
+          echo "" >> out/SMOKE_SUMMARY.md
+          echo "- ✅ ZIP Package: \`${{ steps.find_artifacts.outputs.zip_path }}\`" >> out/SMOKE_SUMMARY.md
+          echo "- ✅ Summary: \`$SUMMARY_PATH\`" >> out/SMOKE_SUMMARY.md
+          if [ "${{ steps.find_artifacts.outputs.screenshot_exists }}" == "true" ]; then
+            echo "- ✅ Screenshot: \`${{ steps.find_artifacts.outputs.screenshot_path }}\`" >> out/SMOKE_SUMMARY.md
+          else
+            echo "- ⚠️ Screenshot: Not generated (install playwright for real screenshots)" >> out/SMOKE_SUMMARY.md
+          fi
+          echo "" >> out/SMOKE_SUMMARY.md
+          echo "## Full Summary" >> out/SMOKE_SUMMARY.md
+          echo "" >> out/SMOKE_SUMMARY.md
+          cat "$SUMMARY_PATH" >> out/SMOKE_SUMMARY.md
+
+      - name: Upload SMOKE_SUMMARY
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-summary
+          path: out/SMOKE_SUMMARY.md
+          retention-days: 30

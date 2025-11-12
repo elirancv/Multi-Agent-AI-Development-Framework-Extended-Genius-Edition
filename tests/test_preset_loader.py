@@ -1,17 +1,15 @@
 """Tests for preset loader."""
 
-import yaml
 from pathlib import Path
 
-import pytest
-
-from src.orchestrator.preset_loader import load_preset, list_presets
+from src.orchestrator.preset_loader import list_presets, load_preset
 
 
 def test_load_preset_mvp_fast(tmp_path: Path) -> None:
     """Test loading mvp-fast preset."""
     presets_path = tmp_path / "presets.yaml"
-    presets_path.write_text("""
+    presets_path.write_text(
+        """
 presets:
   mvp-fast:
     description: "MVP Fast Delivery"
@@ -23,12 +21,15 @@ presets:
       retries:
         requirements: 0
         codegen: 1
-""", encoding="utf-8")
-    
+""",
+        encoding="utf-8",
+    )
+
     # Temporarily override config path
     import src.orchestrator.preset_loader as preset_module
+
     original_path = preset_module.Path("config/presets.yaml")
-    
+
     # Use tmp_path for test
     preset = load_preset("mvp-fast")
     # Since we can't easily mock Path, test with actual config if exists
@@ -63,4 +64,3 @@ def test_preset_policy_structure() -> None:
             assert hasattr(preset, "retries")
             assert hasattr(preset, "timeouts")
             assert isinstance(preset.score_thresholds, dict)
-

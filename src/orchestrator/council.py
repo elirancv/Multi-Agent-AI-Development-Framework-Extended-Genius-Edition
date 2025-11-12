@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Literal, Optional
 
 from src.core.base import BaseAdvisor
-from src.core.types import AgentOutput, AdvisorReview
+from src.core.types import AdvisorReview, AgentOutput
 
 DecisionMode = Literal["majority", "average"]
 
@@ -22,9 +22,7 @@ class AdvisorCouncil:
     name: str = "AdvisorCouncil"
     weights: Optional[Dict[str, float]] = None  # Advisor name -> weight
 
-    def review(
-        self, output: AgentOutput, task: str, context: Dict[str, Any]
-    ) -> AdvisorReview:
+    def review(self, output: AgentOutput, task: str, context: Dict[str, Any]) -> AdvisorReview:
         """Review output using multiple advisors and aggregate results."""
         reviews: List[AdvisorReview] = []
         for name in self.advisors:
@@ -32,9 +30,7 @@ class AdvisorCouncil:
             reviews.append(adv.review(output=output, task=task, context=context))
 
         # Aggregate
-        approved_votes = sum(
-            1 for r in reviews if r["approved"] and r["score"] >= self.min_score
-        )
+        approved_votes = sum(1 for r in reviews if r["approved"] and r["score"] >= self.min_score)
         if self.decision == "average":
             # Apply weights if provided
             if self.weights:
@@ -44,7 +40,11 @@ class AdvisorCouncil:
                     weight = float(self.weights.get(name, 1.0))
                     weighted_sum += weight * float(r["score"])
                     total_weight += weight
-                avg_score = (weighted_sum / total_weight) if total_weight > 0 else sum(r["score"] for r in reviews) / max(1, len(reviews))
+                avg_score = (
+                    (weighted_sum / total_weight)
+                    if total_weight > 0
+                    else sum(r["score"] for r in reviews) / max(1, len(reviews))
+                )
             else:
                 avg_score = sum(r["score"] for r in reviews) / max(1, len(reviews))
             approved = avg_score >= self.min_score
@@ -71,8 +71,7 @@ class AdvisorCouncil:
     def gate(self, review: AdvisorReview, min_score: float) -> bool:
         """
         Gate decision: pass if approved and score >= min_score.
-        
+
         Compatible with BaseAdvisor.gate() interface.
         """
         return review["approved"] and review["score"] >= min_score
-

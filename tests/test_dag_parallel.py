@@ -1,7 +1,7 @@
 """Test parallel DAG execution."""
 
+from src.orchestrator.factory import advisor_factory, agent_factory
 from src.orchestrator.runner_parallel import OrchestratorParallel, PipelineStep
-from src.orchestrator.factory import agent_factory, advisor_factory
 
 
 def test_parallel_waves_run() -> None:
@@ -81,13 +81,10 @@ def test_independent_steps_run_parallel() -> None:
         ),
     ]
 
-    orch = OrchestratorParallel(
-        agent_factory, advisor_factory, max_workers=2, score_thresholds={}
-    )
+    orch = OrchestratorParallel(agent_factory, advisor_factory, max_workers=2, score_thresholds={})
     orch.memory.set("product_idea", "Test")
 
     res = orch.run_waves(steps)
 
     assert len(res["history"]) == 2
     assert all(h["approved"] for h in res["history"])
-

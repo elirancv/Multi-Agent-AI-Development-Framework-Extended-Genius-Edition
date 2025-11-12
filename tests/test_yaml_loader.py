@@ -1,7 +1,8 @@
 """Test YAML pipeline loader."""
 
 import pytest
-from src.orchestrator.yaml_loader import YAMLPipelineLoader, PipelineValidationError
+
+from src.orchestrator.yaml_loader import PipelineValidationError, YAMLPipelineLoader
 
 
 def test_load_valid_pipeline() -> None:
@@ -64,4 +65,3 @@ stages:
 
     with pytest.raises(PipelineValidationError, match="missing"):
         loader.load(yaml_content)
-

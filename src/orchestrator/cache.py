@@ -36,9 +36,7 @@ class AgentCache:
             SHA256 hash of normalized input
         """
         # Keep context small: stage-related keys only
-        ctx_light = {
-            k: v for k, v in context.items() if k.startswith(f"{stage}.")
-        }
+        ctx_light = {k: v for k, v in context.items() if k.startswith(f"{stage}.")}
         raw = json.dumps(
             {"a": agent, "v": agent_version, "s": stage, "t": task, "c": ctx_light},
             sort_keys=True,
@@ -89,7 +87,4 @@ class AgentCache:
             agent_output_dict: Agent output as dictionary
             agent_version: Agent version (default: "0.1.0")
         """
-        self._store[
-            self._key(agent, stage, task, context, agent_version)
-        ] = agent_output_dict
-
+        self._store[self._key(agent, stage, task, context, agent_version)] = agent_output_dict

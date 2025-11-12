@@ -149,4 +149,3 @@ The `.github/workflows/publish-pypi.yml` workflow automatically:
 - [Python Packaging Guide](https://packaging.python.org/)
 - [Build Documentation](https://pypa-build.readthedocs.io/)
 - [Twine Documentation](https://twine.readthedocs.io/)
-

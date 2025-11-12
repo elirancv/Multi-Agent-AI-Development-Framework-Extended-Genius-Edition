@@ -59,7 +59,7 @@ class SQLiteCheckpointStore:
         run_id, step_index = self._split(key)
         # Use checkpoint timestamp if available, otherwise current time
         created_at_ms = int((checkpoint.timestamp or time.time()) * 1000)
-        
+
         payload = (
             run_id,
             step_index,
@@ -68,9 +68,10 @@ class SQLiteCheckpointStore:
             json.dumps(checkpoint.memory_snapshot, ensure_ascii=False),
             json.dumps(checkpoint.extra or {}, ensure_ascii=False),
         )
-        
+
         with sqlite3.connect(self.path) as cx:
-            cx.execute("""
+            cx.execute(
+                """
                 INSERT INTO checkpoints (run_id, step_index, stage, created_at, memory_json, extra_json)
                 VALUES (?, ?, ?, ?, ?, ?)
                 ON CONFLICT(run_id, step_index) DO UPDATE SET
@@ -78,7 +79,9 @@ class SQLiteCheckpointStore:
                     created_at=excluded.created_at,
                     memory_json=excluded.memory_json,
                     extra_json=excluded.extra_json
-            """, payload)
+            """,
+                payload,
+            )
             cx.commit()
 
     def load(self, key: str) -> Optional[Checkpoint]:
@@ -92,18 +95,21 @@ class SQLiteCheckpointStore:
             Checkpoint object or None if not found
         """
         run_id, step_index = self._split(key)
-        
+
         with sqlite3.connect(self.path) as cx:
-            row = cx.execute("""
+            row = cx.execute(
+                """
                 SELECT stage, created_at, memory_json, extra_json
                 FROM checkpoints WHERE run_id=? AND step_index=?
-            """, (run_id, step_index)).fetchone()
-        
+            """,
+                (run_id, step_index),
+            ).fetchone()
+
         if not row:
             return None
-        
+
         stage, created_at, mem_json, extra_json = row
-        
+
         return Checkpoint(
             run_id=run_id,
             step_index=step_index,
@@ -124,11 +130,14 @@ class SQLiteCheckpointStore:
             Latest checkpoint key or None if not found
         """
         with sqlite3.connect(self.path) as cx:
-            row = cx.execute("""
+            row = cx.execute(
+                """
                 SELECT step_index FROM checkpoints
                 WHERE run_id=? ORDER BY step_index DESC LIMIT 1
-            """, (run_id,)).fetchone()
-        
+            """,
+                (run_id,),
+            ).fetchone()
+
         return f"{run_id}:{row[0]}" if row else None
 
     def find_key(self, run_id: str, step_index: int) -> Optional[str]:
@@ -145,8 +154,7 @@ class SQLiteCheckpointStore:
         key = f"{run_id}:{step_index}"
         with sqlite3.connect(self.path) as cx:
             exists = cx.execute(
-                "SELECT 1 FROM checkpoints WHERE run_id=? AND step_index=?",
-                (run_id, step_index)
+                "SELECT 1 FROM checkpoints WHERE run_id=? AND step_index=?", (run_id, step_index)
             ).fetchone()
             return key if exists else None
 
@@ -163,12 +171,15 @@ class SQLiteCheckpointStore:
             List of checkpoint keys
         """
         with sqlite3.connect(self.path) as cx:
-            rows = cx.execute("""
+            rows = cx.execute(
+                """
                 SELECT step_index FROM checkpoints
                 WHERE run_id=? AND created_at BETWEEN ? AND ?
                 ORDER BY step_index ASC
-            """, (run_id, start_ms, end_ms)).fetchall()
-        
+            """,
+                (run_id, start_ms, end_ms),
+            ).fetchall()
+
         return [f"{run_id}:{r[0]}" for r in rows]
 
     @staticmethod
@@ -176,4 +187,3 @@ class SQLiteCheckpointStore:
         """Split checkpoint key into run_id and step_index."""
         run_id, idx = key.split(":", 1)
         return run_id, int(idx)
-

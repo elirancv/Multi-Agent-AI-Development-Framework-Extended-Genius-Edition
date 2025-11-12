@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, Protocol
 
-from src.core.base import BaseFunctionalAgent, BaseAdvisor
+from src.core.base import BaseAdvisor, BaseFunctionalAgent
 from src.core.memory import SharedMemory
 from src.core.types import AgentOutput
 
@@ -38,13 +38,9 @@ class PromptRefinerOnFailure:
     refiner_agent: str = "PromptRefinerAgent"
     refiner_advisor: str = "PromptRefinerAdvisor"
     min_score: float = 0.85
-    task_template: str = (
-        "Refine the prompt based on the last review for: {product_idea}"
-    )
+    task_template: str = "Refine the prompt based on the last review for: {product_idea}"
 
-    def __call__(
-        self, *, step_result: Dict[str, Any], shared_memory: SharedMemory
-    ) -> None:
+    def __call__(self, *, step_result: Dict[str, Any], shared_memory: SharedMemory) -> None:
         """Execute prompt refinement hook on step failure."""
         if step_result.get("approved", True):
             return  # only act on failures
@@ -60,23 +56,17 @@ class PromptRefinerOnFailure:
         # Render a simple task using the memory snapshot
         task = self._render(self.task_template, shared_memory.to_dict())
 
-        output: AgentOutput = agent.process(
-            task=task, context=shared_memory.to_dict()
-        )
+        output: AgentOutput = agent.process(task=task, context=shared_memory.to_dict())
         agent.validate_output(output)
 
-        review = advisor.review(
-            output=output, task=task, context=shared_memory.to_dict()
-        )
+        review = advisor.review(output=output, task=task, context=shared_memory.to_dict())
 
         if advisor.gate(review, self.min_score):
             # Persist refined prompt and artifacts
             shared_memory.update(
                 {
                     f"{stage}.refined_prompt.content": output.content,
-                    f"{stage}.refined_prompt.artifacts": [
-                        a.to_dict() for a in output.artifacts
-                    ],
+                    f"{stage}.refined_prompt.artifacts": [a.to_dict() for a in output.artifacts],
                     f"{stage}.refined_prompt.review": review,
                 }
             )
@@ -101,4 +91,3 @@ class PromptRefinerOnFailure:
             if token in out:
                 out = out.replace(token, str(v))
         return out
-

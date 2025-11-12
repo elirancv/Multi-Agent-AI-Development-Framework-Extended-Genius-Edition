@@ -109,4 +109,3 @@ CREATE_TAG=true SIGN_TAG=true TAG_NAME=v1.0.0 ./scripts/commit_push.sh
 - [Pre-Release Sanity](PRE_RELEASE_SANITY.md)
 - [Definition of Done](DEFINITION_OF_DONE_v1.0.md)
 - [CI Secrets](CI_SECRETS.md)
-

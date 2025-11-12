@@ -216,6 +216,5 @@ See `scripts/release_all.sh` and `scripts/release_all.ps1` for complete automati
 
 ---
 
-**Last Updated**: 2025-01-12  
+**Last Updated**: 2025-01-12
 **Version**: 1.0.0
-

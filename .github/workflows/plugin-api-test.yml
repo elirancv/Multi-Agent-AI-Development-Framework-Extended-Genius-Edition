@@ -19,48 +19,48 @@ jobs:
   test-plugin-loading:
     name: Test Plugin API Loading
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout framework
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      
+
       - name: Install framework
         run: |
           python -m pip install --upgrade pip
           pip install -e .
-      
+
       - name: Create test plugin
         run: |
           mkdir -p test-plugin/test_plugin/agents test-plugin/test_plugin/advisors
-          
+
           # Create test plugin package
           cat > test-plugin/test_plugin/__init__.py << 'EOF'
           __version__ = "0.1.0"
           EOF
-          
+
           cat > test-plugin/test_plugin/agents/__init__.py << 'EOF'
           from .test_agent import TestAgent
           __all__ = ["TestAgent"]
           EOF
-          
+
           cat > test-plugin/test_plugin/advisors/__init__.py << 'EOF'
           from .test_advisor import TestAdvisor
           __all__ = ["TestAdvisor"]
           EOF
-          
+
           cat > test-plugin/test_plugin/agents/test_agent.py << 'EOF'
           from src.core.types import AgentOutput
           from src.core.base import BaseFunctionalAgent
-          
+
           class TestAgent(BaseFunctionalAgent):
               name = "TestAgent"
               version = "0.1.0"
-              
+
               def process(self, task: str, context: dict) -> AgentOutput:
                   return AgentOutput(
                       content=f"Test output for: {task}",
@@ -68,14 +68,14 @@ jobs:
                       metadata={"test": True, "agent": "TestAgent"}
                   )
           EOF
-          
+
           cat > test-plugin/test_plugin/advisors/test_advisor.py << 'EOF'
           from src.core.types import AgentOutput, AdvisorReview
           from src.core.base import BaseAdvisor
-          
+
           class TestAdvisor(BaseAdvisor):
               name = "TestAdvisor"
-              
+
               def review(self, output: AgentOutput, task: str, context: dict) -> AdvisorReview:
                   return {
                       "score": 1.0,
@@ -86,71 +86,71 @@ jobs:
                       "severity": "low"
                   }
           EOF
-          
+
           cat > test-plugin/pyproject.toml << 'EOF'
           [project]
           name = "test-plugin-multiagent"
           version = "0.1.0"
           requires-python = ">=3.8"
-          
+
           [project.entry-points."multiagent.agents"]
           test.TestAgent = "test_plugin.agents.test_agent:TestAgent"
-          
+
           [project.entry-points."multiagent.advisors"]
           test.TestAdvisor = "test_plugin.advisors.test_advisor:TestAdvisor"
-          
+
           [build-system]
           requires = ["setuptools>=61.0", "wheel"]
           build-backend = "setuptools.build_meta"
           EOF
-      
+
       - name: Install test plugin
         run: |
           cd test-plugin
           pip install -e .
-      
+
       - name: Test plugin discovery
         run: |
           python -c "
           from src.orchestrator.plugin_loader import load_plugins
-          
+
           agents = load_plugins('multiagent.agents')
           advisors = load_plugins('multiagent.advisors')
-          
+
           assert 'test.TestAgent' in agents, f'TestAgent not found. Found: {list(agents.keys())}'
           assert 'test.TestAdvisor' in advisors, f'TestAdvisor not found. Found: {list(advisors.keys())}'
-          
+
           print(f'✅ Found {len(agents)} agent plugins')
           print(f'✅ Found {len(advisors)} advisor plugins')
           print(f'✅ Plugin discovery works')
           "
-      
+
       - name: Test factory integration
         run: |
           python -c "
           from src.orchestrator.factory import agent_factory, advisor_factory
-          
+
           # Test plugin agent
           agent = agent_factory('test.TestAgent')
           assert agent.name == 'TestAgent'
-          
+
           # Test plugin advisor
           advisor = advisor_factory('test.TestAdvisor')
           assert advisor.name == 'TestAdvisor'
-          
+
           # Test functionality
           output = agent.process('test task', {})
           assert output.content
           assert output.metadata.get('test') is True
-          
+
           review = advisor.review(output, 'test task', {})
           assert review['approved'] is True
           assert review['score'] == 1.0
-          
+
           print('✅ Factory integration works')
           print('✅ Plugin functionality verified')
           "
-      
+
       - name: Test pipeline with plugin
         run: |
           mkdir -p test-pipeline
@@ -163,7 +163,6 @@ jobs:
               output: docs/test_output.md
               min_score: 0.80
           EOF
-          
+
           python cli.py --pipeline test-pipeline/test.yaml --dry-run
           echo "✅ Pipeline with plugin validates successfully"
-

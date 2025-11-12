@@ -20,7 +20,7 @@ policy:
 stages:
   - name: requirements
     category: requirements
-    agent: RequirementsAgent
+    agent: RequirementsDraftingAgent
     advisor: RequirementsAdvisor
     task: "PRD for {{ product_idea }}"
     output: docs/requirements.md
@@ -83,7 +83,7 @@ stages:
   - name: accessibility
     category: codegen
     agent: AccessibilityAuditAgent
-    advisor: AccessibilityAdvisor
+    advisor: CodeReviewAdvisor
     depends_on: [code_skel]
     task: "A11Y audit"
     output: docs/accessibility_report.md
@@ -92,7 +92,7 @@ stages:
   - name: accessibility2
     category: codegen
     agent: AccessibilityAuditAgent
-    advisor: AccessibilityAdvisor
+    advisor: CodeReviewAdvisor
     depends_on: [code_skel2]
     task: "A11Y audit extended code"
     output: docs/accessibility_report2.md
@@ -100,7 +100,7 @@ stages:
 
   - name: final_review
     category: requirements
-    agent: RequirementsAgent
+    agent: RequirementsDraftingAgent
     advisor: RequirementsAdvisor
     depends_on: [accessibility, accessibility2]
     task: "Final review of all artifacts"
@@ -117,4 +117,3 @@ dependencies:
   accessibility: [code_skel]
   accessibility2: [code_skel2]
   final_review: [accessibility, accessibility2]
-

@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any, Dict
 
 from src.core.base import BaseFunctionalAgent
-from src.core.types import AgentOutput, Artifact, AgentMetadata
+from src.core.types import AgentMetadata, AgentOutput, Artifact
 
 
 class AccessibilityAuditAgent(BaseFunctionalAgent):
@@ -43,13 +43,13 @@ class AccessibilityAuditAgent(BaseFunctionalAgent):
         # Simple accessibility checks
         violations = []
         if html_content:
-            if 'alt=""' in html_content or 'alt=' not in html_content:
+            if 'alt=""' in html_content or "alt=" not in html_content:
                 violations.append("Missing or empty alt attributes on images")
-            if '<header>' not in html_content:
+            if "<header>" not in html_content:
                 violations.append("Missing semantic <header> element")
-            if '<main>' not in html_content:
+            if "<main>" not in html_content:
                 violations.append("Missing semantic <main> element")
-            if 'lang=' not in html_content:
+            if "lang=" not in html_content:
                 violations.append("Missing lang attribute on <html>")
 
         if css_content:
@@ -82,4 +82,3 @@ class AccessibilityAuditAgent(BaseFunctionalAgent):
             artifacts=artifacts,
             metadata=metadata,
         )
-

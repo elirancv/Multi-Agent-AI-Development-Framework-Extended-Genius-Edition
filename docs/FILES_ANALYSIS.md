@@ -131,4 +131,3 @@
 ---
 
 **Conclusion:** No trash files. All files are either essential or clearly optional and documented.
-

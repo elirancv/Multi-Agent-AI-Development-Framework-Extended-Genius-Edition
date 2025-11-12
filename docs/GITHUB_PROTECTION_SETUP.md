@@ -133,4 +133,3 @@ After setting up protection:
 - [GitHub Branch Protection](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/about-protected-branches)
 - [GitHub Tag Protection](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/configuring-tag-protection-rules)
 - [GPG Commit Signing](https://docs.github.com/en/authentication/managing-commit-signature-verification)
-

@@ -1,0 +1,39 @@
+# Preset: Idea-to-ZIP Pipeline
+# Optimized policy for idea-to-zip workflows
+
+preset_name: idea-to-zip
+description: "Optimized settings for idea-to-zip pipeline (faster iteration, quality gates)"
+
+policy:
+  version: 1
+  thresholds:
+    overall: 0.70
+    requirements: 0.75
+    codegen: 0.70
+    validation: 0.65  # Quality gates for lint/a11y
+    documentation: 0.70
+    packaging: 0.50  # Lower threshold for packaging (just needs to work)
+
+  timeouts:
+    default: 300
+    requirements: 60
+    codegen: 120
+    validation: 90
+    documentation: 60
+    packaging: 30
+
+  retries:
+    default: 1
+    codegen: 2  # Retry code generation
+    validation: 1
+
+  advisors:
+    council:
+      - name: RequirementsAdvisor
+        weight: 1.0
+      - name: CodeReviewAdvisor
+        weight: 1.5  # Emphasize code quality
+
+  budget:
+    max_bytes: 10_000_000
+    max_stages: 10

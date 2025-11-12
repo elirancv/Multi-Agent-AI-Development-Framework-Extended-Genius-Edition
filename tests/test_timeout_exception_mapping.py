@@ -4,10 +4,10 @@ import time
 
 import pytest
 
-from src.orchestrator.runner import Orchestrator, PipelineStep
-from src.orchestrator.factory import advisor_factory
+from src.core.types import AgentMetadata, AgentOutput
 from src.orchestrator.errors import TimeoutOrchestratorError
-from src.core.types import AgentOutput, AgentMetadata
+from src.orchestrator.factory import advisor_factory
+from src.orchestrator.runner import Orchestrator, PipelineStep
 
 
 class SlowAgent:
@@ -19,9 +19,7 @@ class SlowAgent:
     def process(self, task, context):
         """Simulate slow execution."""
         time.sleep(0.2)  # Slow
-        return AgentOutput(
-            "x", metadata=AgentMetadata(agent_name=self.name)
-        )
+        return AgentOutput("x", metadata=AgentMetadata(agent_name=self.name))
 
     def validate_output(self, o):
         """Validate output."""
@@ -75,4 +73,3 @@ def test_timeout_emits_error_event() -> None:
 
     # Verify error event was emitted (check event log if accessible)
     # The important thing is that it raises TimeoutOrchestratorError, not generic TimeoutError
-

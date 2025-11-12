@@ -15,9 +15,9 @@ Start in 60s: `python cli.py --pipeline pipeline/production.yaml --preset mvp-fa
 ## Short Version (5 Lines) - Alternative
 
 ```
-🚀 Multi-Agent AI Development Framework v1.0.0 is here! 
+🚀 Multi-Agent AI Development Framework v1.0.0 is here!
 
-A full-scale enterprise AI software organization with 20+ specialized agents (Product, Architecture, Engineering, QA, DevOps) — each with dedicated advisors and cross-cutting governance. 
+A full-scale enterprise AI software organization with 20+ specialized agents (Product, Architecture, Engineering, QA, DevOps) — each with dedicated advisors and cross-cutting governance.
 
 **No unreviewed output. No orphan agents. No vague roles.** Everything is planned, built, reviewed, scored, and evolved.
 
@@ -31,4 +31,3 @@ A full-scale enterprise AI software organization with 20+ specialized agents (Pr
 ## Full Body (Use GITHUB_RELEASE_BODY_v1.0.0.md)
 
 For the complete release body with all details, use the content from `GITHUB_RELEASE_BODY_v1.0.0.md`.
-

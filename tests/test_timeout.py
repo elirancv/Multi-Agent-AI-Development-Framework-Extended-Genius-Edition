@@ -39,4 +39,3 @@ def test_timeout_with_computation() -> None:
 
     result = run_with_timeout(compute, 1.0)
     assert result == sum(range(1000))
-

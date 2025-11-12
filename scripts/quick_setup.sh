@@ -31,4 +31,3 @@ fi
 echo ""
 echo "✅ Quick setup complete!"
 echo "Next: git push -u origin main"
-

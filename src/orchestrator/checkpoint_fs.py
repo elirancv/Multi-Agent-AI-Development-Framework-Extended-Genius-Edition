@@ -115,4 +115,3 @@ class FileCheckpointStore:
         key = f"{run_id}:{step_index}"
         p = self._path(key)
         return key if p.exists() else None
-

@@ -1,7 +1,7 @@
 """Test fail-fast behavior similar to CLI."""
 
+from src.orchestrator.factory import advisor_factory, agent_factory
 from src.orchestrator.runner_parallel import OrchestratorParallel, PipelineStep
-from src.orchestrator.factory import agent_factory, advisor_factory
 
 
 def test_fail_fast_detection() -> None:
@@ -56,4 +56,3 @@ def test_policy_thresholds_override() -> None:
     h = next(x for x in res["history"] if x["stage"] == "req")
     assert h["approved"] is True
     assert h["score"] >= 0.80
-

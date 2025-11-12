@@ -1,0 +1,86 @@
+# Pipeline: From Idea to ZIP
+#
+# This pipeline demonstrates a complete "idea → code → validation → package" workflow.
+# Input: product_idea (via --mem or environment)
+# Output: A ZIP file containing HTML/CSS, README, and validation reports
+#
+# Usage:
+#   python cli.py --pipeline pipeline/gallery/idea-to-zip/pipeline.yaml \
+#     --mem 'product_idea="A simple landing page for a coffee shop"' \
+#     --save-artifacts --output human
+
+stages:
+  - name: Product Definition
+    agent: ProductManager
+    advisor: ProductManagerAdvisor
+    output: docs/product_definition.md
+    min_score: 0.75
+    description: "Define the product from the idea"
+    category: requirements
+
+  - name: Code Skeleton
+    agent: CodeSkeletonAgent
+    advisor: CodeReviewAdvisor
+    input: docs/product_definition.md
+    output: src/index.html
+    min_score: 0.70
+    description: "Generate HTML/CSS skeleton"
+    category: codegen
+
+  - name: Static Lint
+    agent: StaticLinterAgent
+    advisor: CodeReviewAdvisor
+    input: src/index.html
+    output: reports/lint_report.md
+    min_score: 0.60
+    description: "Lint the generated code"
+    category: validation
+
+  - name: Accessibility Audit
+    agent: AccessibilityAuditorAgent
+    advisor: CodeReviewAdvisor
+    input: src/index.html
+    output: reports/a11y_report.md
+    min_score: 0.65
+    description: "Check accessibility compliance"
+    category: validation
+
+  - name: Documentation
+    agent: RequirementsDraftingAgent
+    advisor: RequirementsAdvisor
+    input: docs/product_definition.md
+    output: README.md
+    min_score: 0.70
+    description: "Generate project README"
+    category: documentation
+
+  - name: Package ZIP
+    agent: ZipPackagerAgent
+    advisor: CodeReviewAdvisor
+    input:
+      - src/index.html
+      - README.md
+      - reports/lint_report.md
+      - reports/a11y_report.md
+    output: dist/package.zip
+    min_score: 0.50
+    description: "Create distributable ZIP package"
+    category: packaging
+
+policy:
+  version: 1
+  thresholds:
+    overall: 0.70
+  timeouts:
+    default: 300
+  retries:
+    default: 1
+  advisors:
+    council:
+      - name: RequirementsAdvisor
+        weight: 1.0
+      - name: CodeReviewAdvisor
+        weight: 1.0
+  budget:
+    max_bytes: 10_000_000
+    max_stages: 10

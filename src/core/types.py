@@ -5,9 +5,9 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
-from typing import Any, Dict, List, Optional, TypedDict, Literal
 import json
+from dataclasses import asdict, dataclass, field
+from typing import Any, Dict, List, Literal, Optional, TypedDict
 
 ArtifactType = Literal["text", "markdown", "json", "python", "binary", "image"]
 
@@ -65,9 +65,7 @@ class AgentOutput:
 
     content: str
     artifacts: List[Artifact] = field(default_factory=list)
-    metadata: AgentMetadata = field(
-        default_factory=lambda: AgentMetadata(agent_name="unknown")
-    )
+    metadata: AgentMetadata = field(default_factory=lambda: AgentMetadata(agent_name="unknown"))
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -86,4 +84,3 @@ class AdvisorReview(TypedDict):
     suggestions: List[str]
     summary: str
     severity: Literal["low", "medium", "high", "critical"]
-

@@ -192,7 +192,7 @@ Show me the complete implementation with:
 
 **Then tell me:**
 ```
-"Create src/agents/backend_developer.py with this code, 
+"Create src/agents/backend_developer.py with this code,
 and create tests/test_backend_developer.py following our testing rules"
 ```
 
@@ -218,7 +218,7 @@ Show me:
 
 **Then tell me:**
 ```
-"Create the orchestrator structure in src/orchestrator/ 
+"Create the orchestrator structure in src/orchestrator/
 following our project rules. Use ChatGPT's design as reference"
 ```
 
@@ -374,8 +374,8 @@ Show me code examples."
 
 **1. Ask ChatGPT:**
 ```
-"Design a ProductManagerAgent that takes user prompts and generates 
-product requirements documents. Show me the class structure, 
+"Design a ProductManagerAgent that takes user prompts and generates
+product requirements documents. Show me the class structure,
 process method, and error handling."
 ```
 
@@ -386,7 +386,7 @@ process method, and error handling."
 
 **3. Bring to Me (Cursor AI):**
 ```
-"I got this ProductManagerAgent design from ChatGPT. 
+"I got this ProductManagerAgent design from ChatGPT.
 Can you:
 1. Create src/agents/product_manager.py following our rules?
 2. Ensure it follows code_style.mdc (English only, type hints)?
@@ -402,7 +402,7 @@ Can you:
 
 **5. Iterate:**
 ```
-"ChatGPT suggested adding input validation. 
+"ChatGPT suggested adding input validation.
 Can you update ProductManagerAgent with validation?"
 ```
 
@@ -465,7 +465,7 @@ Can you update ProductManagerAgent with validation?"
 
 ### For Problem Solving
 ```
-"I'm having trouble with [PROBLEM]. 
+"I'm having trouble with [PROBLEM].
 Context: [CONTEXT]
 Error: [ERROR]
 What I tried: [ATTEMPTS]
@@ -520,7 +520,7 @@ Give me examples."
 
 **You → Me (Cursor AI):**
 ```
-"I got this ProductManagerAgent design from ChatGPT. 
+"I got this ProductManagerAgent design from ChatGPT.
 Can you create it in src/agents/ following our rules?"
 ```
 
@@ -531,7 +531,7 @@ Can you create it in src/agents/ following our rules?"
 
 **You → ChatGPT:**
 ```
-"The agent works but needs better error handling. 
+"The agent works but needs better error handling.
 Show me best practices..."
 ```
 
@@ -542,7 +542,7 @@ Show me best practices..."
 
 **You → Me:**
 ```
-"Update ProductManagerAgent with better error handling 
+"Update ProductManagerAgent with better error handling
 based on ChatGPT's suggestions"
 ```
 
@@ -555,7 +555,7 @@ based on ChatGPT's suggestions"
 
 ## 🎯 Key Takeaway
 
-**ChatGPT = Design & Learning**  
+**ChatGPT = Design & Learning**
 **Cursor AI (Me) = Implementation & Rules**
 
 Use ChatGPT for:
@@ -592,4 +592,3 @@ Use me (Cursor AI) for:
 ---
 
 **Remember:** ChatGPT gives you the "what" and "how", I help you implement it correctly in your project! 🎯
-

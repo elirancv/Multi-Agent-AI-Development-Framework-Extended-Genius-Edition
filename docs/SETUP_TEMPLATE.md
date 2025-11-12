@@ -341,4 +341,3 @@ git commit -m "Add my feature"
 ---
 
 **Need Help?** Check the [Template Guide](TEMPLATE_GUIDE.md) for more details.
-

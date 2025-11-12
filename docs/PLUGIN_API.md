@@ -18,7 +18,7 @@ from src.core.types import AgentOutput
 class CustomAgent(BaseFunctionalAgent):
     name = "CustomAgent"
     min_advisor_score = 0.85
-    
+
     def process(self, task: str, context: dict) -> AgentOutput:
         # Your implementation
         return AgentOutput(
@@ -117,7 +117,7 @@ from src.core.types import AgentOutput
 
 class CustomAgent(BaseFunctionalAgent):
     name = "CustomAgent"
-    
+
     def process(self, task: str, context: dict) -> AgentOutput:
         return AgentOutput(
             content=f"Processed: {task}",
@@ -131,7 +131,7 @@ from src.core.types import AgentOutput, AdvisorReview
 
 class CustomAdvisor(BaseAdvisor):
     name = "CustomAdvisor"
-    
+
     def review(self, output: AgentOutput, task: str, context: dict) -> AdvisorReview:
         return {
             "score": 0.9,
@@ -198,4 +198,3 @@ The Plugin API infrastructure is in place, but full documentation and examples w
 - [Base Classes](src/core/base.py)
 - [Factory Functions](src/orchestrator/factory.py)
 - [Plugin Loader](src/orchestrator/plugin_loader.py)
-

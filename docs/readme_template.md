@@ -89,4 +89,3 @@ See `docs/TEMPLATE_GUIDE.md` for details on using this as a template.
 ---
 
 **Note:** This project uses Cursor AI rules. See `.cursor/rules/README.mdc` for rule documentation.
-

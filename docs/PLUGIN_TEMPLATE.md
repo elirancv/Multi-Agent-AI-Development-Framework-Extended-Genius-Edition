@@ -31,15 +31,15 @@ from src.core.base import BaseFunctionalAgent
 
 class CustomAgent(BaseFunctionalAgent):
     """Example external agent (preview)."""
-    
+
     name: str = "CustomAgent"
     version: str = "0.1.0"
     min_advisor_score: float = 0.85
-    
+
     def process(self, task: str, context: Dict[str, Any]) -> AgentOutput:
         """Process task and return structured output."""
         content = f"[CustomAgent] Task received: {task}"
-        
+
         artifacts = [
             Artifact(
                 name="custom_summary.md",
@@ -47,13 +47,13 @@ class CustomAgent(BaseFunctionalAgent):
                 data=content.encode("utf-8"),
             )
         ]
-        
+
         metadata = {
             "source": "custom-plugin",
             "len_task": len(task),
             "agent": "CustomAgent"
         }
-        
+
         return AgentOutput(
             content=content,
             artifacts=artifacts,
@@ -72,20 +72,20 @@ from src.core.base import BaseAdvisor
 
 class CustomAdvisor(BaseAdvisor):
     """Example external advisor (preview)."""
-    
+
     name: str = "CustomAdvisor"
     min_score: float = 0.80
-    
+
     def review(
-        self, 
-        output: AgentOutput, 
-        task: str, 
+        self,
+        output: AgentOutput,
+        task: str,
         context: Dict[str, Any]
     ) -> AdvisorReview:
         """Review agent output and return structured review."""
         ok = bool(output.content and output.content.strip())
         score = 1.0 if ok else 0.0
-        
+
         return {
             "score": score,
             "approved": score >= self.min_score,
@@ -152,7 +152,7 @@ from src.core.types import AgentOutput, AdvisorReview
 def test_custom_agent():
     agent = CustomAgent()
     result = agent.process("test task", {})
-    
+
     assert isinstance(result, AgentOutput)
     assert result.content
     assert len(result.artifacts) > 0
@@ -166,7 +166,7 @@ def test_custom_advisor():
         metadata={}
     )
     review = advisor.review(output, "test task", {})
-    
+
     assert isinstance(review, dict)
     assert "score" in review
     assert "approved" in review
@@ -252,4 +252,3 @@ MIT
 
 - [Plugin API Documentation](PLUGIN_API.md)
 - [Issue Template](.github/ISSUE_TEMPLATE/v1.1-plugin-api.md)
-

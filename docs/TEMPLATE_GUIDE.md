@@ -146,4 +146,3 @@ Use the [Template Checklist](TEMPLATE_CHECKLIST.md) to ensure you've completed a
 ---
 
 **Note:** This template is designed for Python projects but can be adapted for other languages by modifying the relevant rule files.
-

@@ -62,4 +62,3 @@ echo "Next steps:"
 echo "  1. Push to GitHub: git push -u origin main"
 echo "  2. Review: out/validation/FINAL_VALIDATION.md"
 echo "  3. Release: ./scripts/release_all.sh"
-

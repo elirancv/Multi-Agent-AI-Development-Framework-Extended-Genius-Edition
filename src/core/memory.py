@@ -5,9 +5,9 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
-from threading import RLock
 import copy
+from threading import RLock
+from typing import Any, Dict, Optional
 
 
 class SharedMemory:
@@ -33,4 +33,3 @@ class SharedMemory:
     def to_dict(self) -> Dict[str, Any]:
         with self._lock:
             return copy.deepcopy(self._store)
-

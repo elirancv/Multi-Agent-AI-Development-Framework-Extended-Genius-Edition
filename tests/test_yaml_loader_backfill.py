@@ -6,13 +6,13 @@ from pathlib import Path
 import pytest
 import yaml
 
-from src.orchestrator.yaml_loader import YAMLPipelineLoader, PipelineValidationError
+from src.orchestrator.yaml_loader import PipelineValidationError, YAMLPipelineLoader
 from src.orchestrator.yaml_loader_strict import YAMLPipelineLoaderStrict
 
 
 def create_test_pipeline(content: dict) -> Path:
     """Create a temporary pipeline YAML file."""
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
         yaml.dump(content, f)
         return Path(f.name)
 
@@ -30,12 +30,12 @@ def test_yaml_loader_basic():
             }
         ]
     }
-    
+
     path = create_test_pipeline(pipeline)
     try:
         loader = YAMLPipelineLoader()
         steps, policy = loader.load_from_file(str(path))
-        
+
         assert len(steps) == 1
         assert steps[0]["name"] == "test_stage"
     finally:
@@ -58,14 +58,14 @@ def test_yaml_loader_with_policy():
                 "task": "test",
                 "output": "docs/test.md",
             }
-        ]
+        ],
     }
-    
+
     path = create_test_pipeline(pipeline)
     try:
         loader = YAMLPipelineLoader()
         steps, policy = loader.load_from_file(str(path))
-        
+
         assert policy is not None
         assert policy.score_thresholds is not None
         assert policy.score_thresholds.get("default") == 0.85
@@ -91,18 +91,16 @@ def test_yaml_loader_dependencies():
                 "task": "test2",
                 "input": "docs/stage1.md",
                 "output": "docs/stage2.md",
-            }
+            },
         ],
-        "dependencies": {
-            "stage2": ["stage1"]
-        }
+        "dependencies": {"stage2": ["stage1"]},
     }
-    
+
     path = create_test_pipeline(pipeline)
     try:
         loader = YAMLPipelineLoaderStrict()
         steps, thresholds = loader.load(str(path))
-        
+
         assert len(steps) == 2
         # Dependencies should be resolved
     finally:
@@ -126,14 +124,11 @@ def test_yaml_loader_cyclic_dependencies():
                 "advisor": "RequirementsAdvisor",
                 "task": "test2",
                 "output": "docs/stage2.md",
-            }
+            },
         ],
-        "dependencies": {
-            "stage1": ["stage2"],
-            "stage2": ["stage1"]
-        }
+        "dependencies": {"stage1": ["stage2"], "stage2": ["stage1"]},
     }
-    
+
     path = create_test_pipeline(pipeline)
     try:
         loader = YAMLPipelineLoaderStrict()
@@ -162,13 +157,13 @@ def test_yaml_loader_missing_dependency():
                 "task": "test2",
                 "input": "docs/missing.md",  # Missing dependency
                 "output": "docs/stage2.md",
-            }
+            },
         ],
         "dependencies": {
             "stage2": ["missing_stage"]  # Missing stage
-        }
+        },
     }
-    
+
     path = create_test_pipeline(pipeline)
     try:
         loader = YAMLPipelineLoaderStrict()
@@ -196,14 +191,14 @@ def test_yaml_loader_advisor_weights():
                 "task": "test",
                 "output": "docs/test.md",
             }
-        ]
+        ],
     }
-    
+
     path = create_test_pipeline(pipeline)
     try:
         loader = YAMLPipelineLoader()
         steps, policy = loader.load_from_file(str(path))
-        
+
         assert policy is not None
         # Advisor weights may be in policy or separate
     finally:
@@ -212,10 +207,10 @@ def test_yaml_loader_advisor_weights():
 
 def test_yaml_loader_invalid_yaml():
     """Test YAML loader handles invalid YAML."""
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
         f.write("invalid: yaml: content: [")
         invalid_path = Path(f.name)
-    
+
     try:
         loader = YAMLPipelineLoader()
         with pytest.raises((yaml.YAMLError, PipelineValidationError, Exception)):
@@ -234,7 +229,7 @@ def test_yaml_loader_missing_required_fields():
             }
         ]
     }
-    
+
     path = create_test_pipeline(pipeline)
     try:
         loader = YAMLPipelineLoaderStrict()
@@ -242,4 +237,3 @@ def test_yaml_loader_missing_required_fields():
             loader.load(str(path))
     finally:
         path.unlink(missing_ok=True)
-

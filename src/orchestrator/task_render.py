@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Dict, Any
+from typing import Any, Dict
 
 try:
     from jinja2 import Environment, StrictUndefined
@@ -44,4 +44,3 @@ def render_task(template: str, memory: Dict[str, Any]) -> str:
         if token in result:
             result = result.replace(token, str(v))
     return result
-

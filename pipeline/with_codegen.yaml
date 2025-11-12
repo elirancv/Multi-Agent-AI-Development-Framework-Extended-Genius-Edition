@@ -29,4 +29,3 @@ stages:
     advisor: CodeReviewAdvisor
     task: "Generate a minimal, static HTML/CSS skeleton based on refined prompt"
     max_retries: 1
-

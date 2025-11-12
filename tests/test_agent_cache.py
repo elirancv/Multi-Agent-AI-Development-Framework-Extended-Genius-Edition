@@ -65,4 +65,3 @@ def test_cache_filters_context() -> None:
     result = c.get("A", "requirements", "T", ctx_filtered)
     assert result is not None
     assert result["content"] == "ok"
-

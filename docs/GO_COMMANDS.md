@@ -140,4 +140,3 @@ Use `.github/ISSUES/v1.1-issue-pack.md` to create:
 - [Definition of Done](DEFINITION_OF_DONE_v1.0.md)
 - [v1.1 Roadmap](V1.1_ROADMAP.md)
 - [Success Metrics](SUCCESS_METRICS.md)
-

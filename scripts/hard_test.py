@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 import subprocess
 import sys
 import time
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
 
 from scripts.kpi_aggregator import aggregate_kpis, write_kpis
 
@@ -23,16 +22,16 @@ def run_hard_test(
 ) -> Dict[str, Any]:
     """Run hard test pipeline and collect KPIs."""
     start_time = time.time()
-    
+
     # Build CLI args
     cmd = ["python", "cli.py", "--pipeline", pipeline, "--output", "json"]
-    
+
     if parallel:
         cmd.extend(["--parallel", "--max-workers", str(max_workers)])
-    
+
     if save_artifacts:
         cmd.append("--save-artifacts")
-    
+
     # Run pipeline
     try:
         result = subprocess.run(
@@ -41,22 +40,22 @@ def run_hard_test(
             text=True,
             timeout=900,  # 15 min timeout
         )
-        
+
         execution_time = time.time() - start_time
-        
+
         # Parse JSON output
         try:
             run_result = json.loads(result.stdout) if result.stdout else {}
         except json.JSONDecodeError:
             run_result = {}
-        
+
         # Aggregate KPIs
         kpis = aggregate_kpis(run_result)
         kpis["execution_time_sec"] = execution_time
         kpis["exit_code"] = result.returncode
-        
+
         return kpis
-        
+
     except subprocess.TimeoutExpired:
         return {
             "execution_time_sec": time.time() - start_time,
@@ -96,9 +95,9 @@ def main() -> int:
     parser.add_argument("--save-artifacts", action="store_true", help="Save artifacts")
     parser.add_argument("--out", type=str, default="out/hard-tests", help="Output directory")
     parser.add_argument("--json", action="store_true", help="Output JSON")
-    
+
     args = parser.parse_args()
-    
+
     kpis = run_hard_test(
         pipeline=args.pipeline,
         parallel=args.parallel,
@@ -106,29 +105,26 @@ def main() -> int:
         save_artifacts=args.save_artifacts,
         out_dir=args.out,
     )
-    
+
     # Write KPIs to files
     write_kpis(args.out, kpis)
-    
+
     # Generate Markdown summary
     from scripts.kpi_aggregator import generate_kpi_markdown
+
     generate_kpi_markdown(kpis, str(Path(args.out) / "KPIS_SUMMARY.md"))
-    
+
     if args.json:
         print(json.dumps(kpis, indent=2))
     else:
         print("\nKPI Report:")
         for key, value in kpis.items():
             print(f"  {key}: {value}")
-    
+
     # Success criteria: approved_ratio >= 0.95 and avg_score >= 0.85
-    success = (
-        kpis.get("approved_ratio", 0.0) >= 0.95
-        and kpis.get("avg_score", 0.0) >= 0.85
-    )
+    success = kpis.get("approved_ratio", 0.0) >= 0.95 and kpis.get("avg_score", 0.0) >= 0.85
     return 0 if success else 1
 
 
 if __name__ == "__main__":
     sys.exit(main())
-

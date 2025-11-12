@@ -257,4 +257,3 @@ These scripts are designed to work with `docs/RELEASE_CHECKLIST_v1.0.0.md`:
 - [Release Checklist](docs/RELEASE_CHECKLIST_v1.0.0.md)
 - [Semantic Release Guidelines](docs/SEMANTIC_RELEASE.md)
 - [Release Summary](docs/RELEASE_SUMMARY.md)
-

@@ -146,5 +146,5 @@ This template is designed to be customized. Feel free to:
 
 **Note:** This template uses Cursor AI rules. See `.cursor/rules/README.mdc` for rule documentation.
 
-**Template Version:** 2.0.0  
+**Template Version:** 2.0.0
 **Last Updated:** 2025-01-12

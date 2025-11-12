@@ -125,4 +125,3 @@ else
     echo "  2. Trigger Nightly Tests (see step 5 above)"
     echo "  3. Monitor metrics (see docs/POST_RELEASE_MONITORING.md)"
 fi
-

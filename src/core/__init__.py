@@ -1,15 +1,15 @@
 """Core types and base classes for the multi-agent system."""
 
-from .types import (
-    Artifact,
-    ArtifactType,
-    AgentMetadata,
-    AgentOutput,
-    AdvisorReview,
-)
-from .base import BaseFunctionalAgent, BaseAdvisor
+from .base import BaseAdvisor, BaseFunctionalAgent
 from .memory import SharedMemory
 from .resume import Checkpoint, CheckpointStore
+from .types import (
+    AdvisorReview,
+    AgentMetadata,
+    AgentOutput,
+    Artifact,
+    ArtifactType,
+)
 
 __all__ = [
     "Artifact",
@@ -23,4 +23,3 @@ __all__ = [
     "Checkpoint",
     "CheckpointStore",
 ]
-

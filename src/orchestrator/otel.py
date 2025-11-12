@@ -6,12 +6,13 @@ from contextlib import contextmanager
 from typing import Any, Dict, Optional
 
 try:
-    from opentelemetry import trace
-    from opentelemetry.sdk.trace import TracerProvider
-    from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
-    from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
     import logging
     import warnings
+
+    from opentelemetry import trace
+    from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+    from opentelemetry.sdk.trace import TracerProvider
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
 
     OPENTELEMETRY_AVAILABLE = True
 except ImportError:
@@ -43,7 +44,7 @@ def init_otel(
         if warnings:
             warnings.filterwarnings("ignore", category=UserWarning)
             warnings.filterwarnings("ignore", message=".*connection.*", category=Warning)
-        
+
         if logging:
             # Suppress urllib3/requests connection errors
             urllib3_logger = logging.getLogger("urllib3")
@@ -59,9 +60,9 @@ def init_otel(
             otel_logger = logging.getLogger("opentelemetry.sdk")
             otel_logger.setLevel(logging.CRITICAL)
             otel_logger.disabled = True
-        
+
         tp = TracerProvider()
-        
+
         # Try OTLP exporter first, but catch connection errors silently
         try:
             otlp_exporter = OTLPSpanExporter(endpoint)
@@ -78,7 +79,7 @@ def init_otel(
                     # If console also fails, use no-op (no processor)
                     pass
             # Otherwise, use no-op (no processor)
-        
+
         trace.set_tracer_provider(tp)
         global _tracer
         _tracer = trace.get_tracer(service_name)
@@ -116,4 +117,3 @@ def span(name: str, attrs: Optional[Dict[str, Any]] = None):
     except Exception:
         # Fail silently if span creation fails
         yield None
-

@@ -89,4 +89,3 @@ template: |
   ---
 
   **Full Changelog**: $PREVIOUS_TAG...$NEXT_PATCH_VERSION
-

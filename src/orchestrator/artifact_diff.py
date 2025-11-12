@@ -42,4 +42,3 @@ def diff_summary(old: str, new: str) -> Tuple[int, int]:
     added = sum(1 for line in diff_lines if line.startswith("+") and not line.startswith("+++"))
     removed = sum(1 for line in diff_lines if line.startswith("-") and not line.startswith("---"))
     return added, removed
-

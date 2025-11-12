@@ -12,32 +12,32 @@ jobs:
   build-check:
     name: Build and Validate Package
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      
+
       - name: Install build tools
         run: |
           python -m pip install --upgrade pip
           pip install build twine
-      
+
       - name: Build package
         run: python -m build
-      
+
       - name: Check package
         run: twine check dist/*
-      
+
       - name: List built files
         run: |
           echo "Built files:"
           ls -lh dist/
-      
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         if: github.event_name == 'release'
@@ -45,10 +45,9 @@ jobs:
           name: dist-packages
           path: dist/*
           retention-days: 90
-      
+
       - name: Validate package contents
         run: |
           echo "Package contents:"
           python -m zipfile -l dist/*.whl | head -20 || true
           tar -tzf dist/*.tar.gz | head -20 || true
-

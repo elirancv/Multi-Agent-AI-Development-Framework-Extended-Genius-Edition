@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from src.orchestrator.artifact_sink import persist_artifacts, _safe_name
+from src.orchestrator.artifact_sink import _safe_name, persist_artifacts
 
 
 def test_safe_name_sanitization() -> None:
@@ -21,9 +21,7 @@ def test_binary_artifact_persistence(tmp_path: Path) -> None:
         "run_id": "r_binary",
         "history": [{"stage": "s1", "approved": True, "score": 0.9}],
         "memory": {
-            "s1.artifacts": [
-                {"name": "image.png", "type": "binary", "content": binary_content}
-            ],
+            "s1.artifacts": [{"name": "image.png", "type": "binary", "content": binary_content}],
         },
     }
 
@@ -45,9 +43,7 @@ def test_base64_artifact_decoding(tmp_path: Path) -> None:
         "run_id": "r_base64",
         "history": [{"stage": "s1", "approved": True, "score": 0.9}],
         "memory": {
-            "s1.artifacts": [
-                {"name": "data.bin", "type": "binary", "content": base64_content}
-            ],
+            "s1.artifacts": [{"name": "data.bin", "type": "binary", "content": base64_content}],
         },
     }
 
@@ -57,4 +53,3 @@ def test_base64_artifact_decoding(tmp_path: Path) -> None:
     assert artifact_file.exists()
     # Should be decoded from base64
     assert artifact_file.read_bytes() == original_content
-

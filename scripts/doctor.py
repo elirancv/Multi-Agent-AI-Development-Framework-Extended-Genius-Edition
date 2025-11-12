@@ -71,14 +71,14 @@ def check_env_vars() -> tuple[bool, List[str]]:
     orch_vars = {k: v for k, v in os.environ.items() if k.startswith("ORCH_")}
     if not orch_vars:
         return True, []
-    
+
     issues = []
     for key, value in orch_vars.items():
         if not value or value.strip() == "":
             issues.append(f"{key} is empty")
         elif " " in value and "=" not in value:
             issues.append(f"{key} may have invalid format")
-    
+
     if issues:
         return False, issues
     return True, [f"{k}={v[:50]}..." if len(v) > 50 else f"{k}={v}" for k, v in orch_vars.items()]
@@ -89,11 +89,13 @@ def check_cli_version() -> tuple[bool, str]:
     try:
         import sys
         from pathlib import Path
+
         # Add project root to path
         project_root = Path(__file__).parent.parent
         if str(project_root) not in sys.path:
             sys.path.insert(0, str(project_root))
         from src import __version__
+
         return True, f"CLI version: {__version__}"
     except Exception as e:
         return False, f"Cannot get CLI version: {e}"
@@ -106,14 +108,14 @@ def run_doctor(verbose: bool = False, json_output: bool = False) -> int:
         "warnings": [],
         "info": [],
     }
-    
+
     # Python version
     ok, msg = check_python_version()
     if ok:
         checks["info"].append({"check": "python_version", "status": "ok", "message": msg})
     else:
         checks["errors"].append({"check": "python_version", "status": "error", "message": msg})
-    
+
     # Required modules
     required_modules = ["jinja2", "yaml", "pydantic"]
     for module in required_modules:
@@ -121,8 +123,10 @@ def run_doctor(verbose: bool = False, json_output: bool = False) -> int:
         if ok:
             checks["info"].append({"check": f"module_{module}", "status": "ok", "message": msg})
         else:
-            checks["errors"].append({"check": f"module_{module}", "status": "error", "message": msg})
-    
+            checks["errors"].append(
+                {"check": f"module_{module}", "status": "error", "message": msg}
+            )
+
     # Optional modules
     optional_modules = [("graphviz", True), ("pdoc", True), ("pre_commit", True)]
     for module, is_optional in optional_modules:
@@ -130,8 +134,10 @@ def run_doctor(verbose: bool = False, json_output: bool = False) -> int:
         if ok:
             checks["info"].append({"check": f"module_{module}", "status": "ok", "message": msg})
         else:
-            checks["warnings"].append({"check": f"module_{module}", "status": "warning", "message": msg})
-    
+            checks["warnings"].append(
+                {"check": f"module_{module}", "status": "warning", "message": msg}
+            )
+
     # Commands
     optional_commands = [("graphviz", True), ("pdoc", True), ("pre-commit", True)]
     for cmd, is_optional in optional_commands:
@@ -139,8 +145,10 @@ def run_doctor(verbose: bool = False, json_output: bool = False) -> int:
         if ok:
             checks["info"].append({"check": f"command_{cmd}", "status": "ok", "message": msg})
         else:
-            checks["warnings"].append({"check": f"command_{cmd}", "status": "warning", "message": msg})
-    
+            checks["warnings"].append(
+                {"check": f"command_{cmd}", "status": "warning", "message": msg}
+            )
+
     # Write permissions
     out_dir = Path("out")
     out_dir.mkdir(exist_ok=True)
@@ -149,31 +157,41 @@ def run_doctor(verbose: bool = False, json_output: bool = False) -> int:
         checks["info"].append({"check": "write_permissions", "status": "ok", "message": msg})
     else:
         checks["errors"].append({"check": "write_permissions", "status": "error", "message": msg})
-    
+
     # Disk space
     ok, msg = check_disk_space(out_dir, min_gb=0.1)
     if ok:
         checks["info"].append({"check": "disk_space", "status": "ok", "message": msg})
     else:
         checks["warnings"].append({"check": "disk_space", "status": "warning", "message": msg})
-    
+
     # Environment variables
     ok, env_info = check_env_vars()
     if ok:
         if env_info:
-            checks["info"].append({"check": "env_vars", "status": "ok", "message": f"Found {len(env_info)} ORCH_* variables"})
+            checks["info"].append(
+                {
+                    "check": "env_vars",
+                    "status": "ok",
+                    "message": f"Found {len(env_info)} ORCH_* variables",
+                }
+            )
         else:
-            checks["info"].append({"check": "env_vars", "status": "ok", "message": "No ORCH_* variables set"})
+            checks["info"].append(
+                {"check": "env_vars", "status": "ok", "message": "No ORCH_* variables set"}
+            )
     else:
-        checks["warnings"].append({"check": "env_vars", "status": "warning", "message": "; ".join(env_info)})
-    
+        checks["warnings"].append(
+            {"check": "env_vars", "status": "warning", "message": "; ".join(env_info)}
+        )
+
     # CLI version
     ok, msg = check_cli_version()
     if ok:
         checks["info"].append({"check": "cli_version", "status": "ok", "message": msg})
     else:
         checks["errors"].append({"check": "cli_version", "status": "error", "message": msg})
-    
+
     # Output
     if json_output:
         result = {
@@ -188,20 +206,20 @@ def run_doctor(verbose: bool = False, json_output: bool = False) -> int:
             print("❌ Errors:", file=sys.stderr)
             for err in checks["errors"]:
                 print(f"  • {err['message']}", file=sys.stderr)
-        
+
         if checks["warnings"]:
             print("⚠️  Warnings:", file=sys.stderr)
             for warn in checks["warnings"]:
                 print(f"  • {warn['message']}", file=sys.stderr)
-        
+
         if verbose and checks["info"]:
             print("✅ OK:", file=sys.stderr)
             for info in checks["info"]:
                 print(f"  • {info['message']}", file=sys.stderr)
-        
+
         if not checks["errors"] and not checks["warnings"]:
             print("✅ All checks passed!", file=sys.stderr)
-    
+
     # Exit code
     if checks["errors"]:
         return EXIT_ERRORS
@@ -213,15 +231,14 @@ def run_doctor(verbose: bool = False, json_output: bool = False) -> int:
 def main() -> int:
     """Main entry point for doctor command."""
     import argparse
-    
+
     ap = argparse.ArgumentParser(description="Diagnose environment for multi-agent framework")
     ap.add_argument("--json", action="store_true", help="Output JSON format")
     ap.add_argument("--verbose", "-v", action="store_true", help="Show all checks")
-    
+
     args = ap.parse_args()
     return run_doctor(verbose=args.verbose, json_output=args.json)
 
 
 if __name__ == "__main__":
     sys.exit(main())
-

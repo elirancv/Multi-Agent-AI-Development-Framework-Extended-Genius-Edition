@@ -1,0 +1,107 @@
+# Pipeline: From Idea to ZIP (with Design Variables)
+#
+# Enhanced version with design customization via memory variables.
+# Supports: brand, primary_color, tone, font_family
+#
+# Usage:
+#   python cli.py --pipeline pipeline/gallery/idea-to-zip/pipeline-with-design.yaml \
+#     --mem 'product_idea="Coffee shop" brand="BlueBean" primary_color="#0ea5e9" tone="minimal" font_family="Inter"' \
+#     --save-artifacts --output human
+
+stages:
+  - name: Product Definition
+    agent: RequirementsDraftingAgent
+    advisor: RequirementsAdvisor
+    output: docs/product_definition.md
+    min_score: 0.75
+    description: "Define the product from the idea"
+    category: requirements
+    task: |
+      Create PRD for: {{ product_idea }}
+      Brand: {{ brand | default("Default") }}
+      Design tone: {{ tone | default("professional") }}
+      Primary color: {{ primary_color | default("#007bff") }}
+
+  - name: Code Skeleton
+    agent: CodeSkeletonAgent
+    advisor: CodeReviewAdvisor
+    input: docs/product_definition.md
+    output: src/index.html
+    min_score: 0.70
+    description: "Generate HTML/CSS skeleton with design variables"
+    category: codegen
+    task: |
+      Generate HTML/CSS for: {{ product_idea }}
+      Brand: {{ brand | default("Default") }}
+      Primary color: {{ primary_color | default("#007bff") }}
+      Tone: {{ tone | default("professional") }}
+      Font: {{ font_family | default("system-ui") }}
+      Include: responsive layout, modern CSS, semantic HTML
+
+  - name: Static Lint
+    agent: StaticLinterAgent
+    advisor: CodeReviewAdvisor
+    input: src/index.html
+    output: reports/lint_report.md
+    min_score: 0.60
+    description: "Lint the generated code"
+    category: validation
+
+  - name: Accessibility Audit
+    agent: AccessibilityAuditAgent
+    advisor: CodeReviewAdvisor
+    input: src/index.html
+    output: reports/a11y_report.md
+    min_score: 0.65
+    description: "Check accessibility compliance"
+    category: validation
+
+  - name: Documentation
+    agent: RequirementsDraftingAgent
+    advisor: RequirementsAdvisor
+    input: docs/product_definition.md
+    output: README.md
+    min_score: 0.70
+    description: "Generate project README with design notes"
+    category: documentation
+    task: |
+      Create README for: {{ product_idea }}
+      Include:
+      - Project description
+      - Design system (brand: {{ brand }}, color: {{ primary_color }}, tone: {{ tone }})
+      - Setup instructions
+      - Usage examples
+
+  - name: Package ZIP
+    agent: ZipPackagerAgent
+    advisor: CodeReviewAdvisor
+    input:
+      - src/index.html
+      - README.md
+      - reports/lint_report.md
+      - reports/a11y_report.md
+    output: dist/package.zip
+    min_score: 0.50
+    description: "Create distributable ZIP package"
+    category: packaging
+
+policy:
+  version: 1
+  thresholds:
+    overall: 0.70
+    validation: 0.65  # Stricter for lint/a11y
+  timeouts:
+    default: 300
+    codegen: 120  # More time for design work
+  retries:
+    default: 1
+    codegen: 2  # Retry code generation if needed
+  advisors:
+    council:
+      - name: RequirementsAdvisor
+        weight: 1.0
+      - name: CodeReviewAdvisor
+        weight: 1.5  # Higher weight for code quality
+  budget:
+    max_bytes: 10_000_000
+    max_stages: 10

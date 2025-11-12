@@ -26,4 +26,3 @@ if ($hasChanges) {
 Write-Host ""
 Write-Host "✅ Quick setup complete!" -ForegroundColor Green
 Write-Host "Next: git push -u origin main"
-

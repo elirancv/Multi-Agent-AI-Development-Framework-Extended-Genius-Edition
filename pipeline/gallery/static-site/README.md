@@ -34,4 +34,3 @@ python cli.py --pipeline pipeline/gallery/static-site/pipeline.yaml --preset mvp
 🟡 **Planned for v1.1.0**
 
 This is a reference pipeline. Full implementation coming in v1.1.0.
-

@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from typing import Any, Dict, List
+
 from src.core.base import BaseFunctionalAgent
-from src.core.types import AgentOutput, Artifact, AgentMetadata
+from src.core.types import AgentMetadata, AgentOutput, Artifact
 
 
 class PromptRefinerAgent(BaseFunctionalAgent):
@@ -19,7 +20,7 @@ class PromptRefinerAgent(BaseFunctionalAgent):
     def process(self, task: str, context: Dict[str, Any]) -> AgentOutput:
         """
         Synthesize a refined prompt from the last advisor review + original task.
-        
+
         Expected context keys (if exist):
           - <stage>.last_review: AdvisorReview dict
           - <stage>.last_output: AgentOutput dict
@@ -31,12 +32,8 @@ class PromptRefinerAgent(BaseFunctionalAgent):
                 last_review = v
                 break
 
-        issues: List[str] = (
-            last_review.get("critical_issues", []) if last_review else []
-        )
-        suggestions: List[str] = (
-            last_review.get("suggestions", []) if last_review else []
-        )
+        issues: List[str] = last_review.get("critical_issues", []) if last_review else []
+        suggestions: List[str] = last_review.get("suggestions", []) if last_review else []
 
         # Build refined prompt with structured sections
         refined_sections = [
@@ -51,8 +48,7 @@ class PromptRefinerAgent(BaseFunctionalAgent):
         refined_sections.extend(["## Improvements to Apply"])
 
         refined_sections.extend(
-            [f"- {s}" for s in suggestions]
-            or ["- Expand details and acceptance criteria."]
+            [f"- {s}" for s in suggestions] or ["- Expand details and acceptance criteria."]
         )
 
         refined_sections.extend(
@@ -88,4 +84,3 @@ class PromptRefinerAgent(BaseFunctionalAgent):
         )
 
         return AgentOutput(content=content, artifacts=artifacts, metadata=meta)
-

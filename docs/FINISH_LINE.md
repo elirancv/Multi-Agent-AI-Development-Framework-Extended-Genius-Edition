@@ -146,4 +146,3 @@ Ready-to-use commit messages available in:
 All checks pass, all files ready, all documentation complete.
 
 **Next Step**: Run pre-tag checks → Tag & Release → Post-release bump → v1.1 kickoff
-

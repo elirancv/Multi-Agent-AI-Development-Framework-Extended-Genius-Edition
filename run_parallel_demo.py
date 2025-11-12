@@ -1,7 +1,7 @@
 """Demo script for running parallel pipeline."""
 
+from src.orchestrator.factory import advisor_factory, agent_factory
 from src.orchestrator.runner_parallel import OrchestratorParallel
-from src.orchestrator.factory import agent_factory, advisor_factory
 from src.orchestrator.yaml_loader_strict import YAMLPipelineLoaderStrict
 
 
@@ -55,4 +55,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

@@ -42,4 +42,3 @@ def test_eventlog_creates_parent_dirs(tmp_path: Path) -> None:
 
     assert log_path.exists()
     assert log_path.parent.exists()
-

@@ -1,10 +1,7 @@
 """Tests for SQLite checkpoint store."""
 
-import json
 import time
 from pathlib import Path
-
-import pytest
 
 from src.core.resume import Checkpoint
 from src.orchestrator.checkpoint_sqlite import SQLiteCheckpointStore
@@ -64,11 +61,11 @@ def test_sqlite_date_range(tmp_path: Path) -> None:
     ck0 = Checkpoint("r", 0, "s0", {"a": 1}, {})
     ck0.timestamp = (now_ms - 2000) / 1000.0
     store.save("r:0", ck0)
-    
+
     ck1 = Checkpoint("r", 1, "s1", {"b": 2}, {})
     ck1.timestamp = (now_ms - 1000) / 1000.0
     store.save("r:1", ck1)
-    
+
     ck2 = Checkpoint("r", 2, "s2", {"c": 3}, {})
     ck2.timestamp = now_ms / 1000.0
     store.save("r:2", ck2)
@@ -105,4 +102,3 @@ def test_sqlite_atomic_save(tmp_path: Path) -> None:
     loaded = store.load("r1:1")
     assert loaded is not None
     assert loaded.memory_snapshot["v"] == 2
-

@@ -18,7 +18,7 @@ smoke = {}
 try:
     smoke_path = Path("out/validation/SMOKE_FAST.json")
     if smoke_path.exists():
-        with open(smoke_path, "r", encoding="utf-8") as f:
+        with open(smoke_path, encoding="utf-8") as f:
             smoke = json.load(f)
         passed = smoke.get("summary", {}).get("passed", 0)
         total = smoke.get("summary", {}).get("total", 1)
@@ -30,7 +30,10 @@ except Exception as e:
 # Check version
 try:
     import subprocess
-    version_out = subprocess.check_output([sys.executable, "cli.py", "--version"], text=True).strip()
+
+    version_out = subprocess.check_output(
+        [sys.executable, "cli.py", "--version"], text=True
+    ).strip()
     if version_out != "1.0.0":
         status = "red"
         notes.append(f"Version mismatch: expected 1.0.0, got {version_out}")
@@ -47,7 +50,7 @@ else:
 
 # Check badges
 try:
-    with open("README.md", "r", encoding="utf-8") as f:
+    with open("README.md", encoding="utf-8") as f:
         readme_content = f.read()
     if "your-org/AgentsSystemV2" in readme_content:
         warnings.append("Badge URLs still contain placeholders")
@@ -60,7 +63,7 @@ except Exception:
 try:
     doctor_path = Path("out/validation/doctor_output.txt")
     if doctor_path.exists():
-        with open(doctor_path, "r", encoding="utf-8") as f:
+        with open(doctor_path, encoding="utf-8") as f:
             doctor_content = f.read()
         if "error" in doctor_content.lower() and "cli_version" in doctor_content.lower():
             # Check if it's just the import issue we fixed
@@ -99,7 +102,7 @@ report_md += "\n**Notes:**\n"
 for n in notes:
     report_md += f"- {n}\n"
 
-report_md += f"""
+report_md += """
 
 ## Artifacts
 
@@ -141,7 +144,13 @@ Review errors above and fix before release.
 with open("out/validation/FINAL_VALIDATION.md", "w", encoding="utf-8") as f:
     f.write(report_md)
 
-print(report_md)
+# Print report (handle Windows encoding issues)
+try:
+    print(report_md)
+except UnicodeEncodeError:
+    # Fallback for Windows console that doesn't support emojis
+    report_md_safe = report_md.encode("ascii", "ignore").decode("ascii")
+    print(report_md_safe)
 
 # Also create JSON
 report_json = {
@@ -157,4 +166,3 @@ with open("out/validation/FINAL_VALIDATION.json", "w", encoding="utf-8") as f:
     json.dump(report_json, f, indent=2)
 
 sys.exit(0 if status == "green" else 1 if status == "red" else 0)
-

@@ -71,7 +71,7 @@ python cli.py clean --older-than 7d --max-size 2GB --keep-latest 10 --dry-run
 
 See [docs/QUICKSTART.md](docs/QUICKSTART.md) for detailed setup and [docs/INDEX.md](docs/INDEX.md) for full documentation.
 
-**Need help?** 
+**Need help?**
 - Run diagnostics: `python scripts/doctor.py` or `python cli.py doctor`
 - Check [Known Issues](docs/KNOWN_ISSUES.md) for common problems
 - Open an [issue](https://github.com/elirancv/Multi-Agent-AI-Development-Framework-Extended-Genius-Edition/issues) or check our [documentation](docs/INDEX.md)

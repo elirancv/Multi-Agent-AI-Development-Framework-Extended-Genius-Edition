@@ -115,9 +115,7 @@ def persist_artifacts(
 
     # Write manifest.json
     manifest_path = base / "manifest.json"
-    manifest_path.write_text(
-        json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8"
-    )
+    manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
 
     # Also drop a short SUMMARY.md
     (base / "SUMMARY.md").write_text(

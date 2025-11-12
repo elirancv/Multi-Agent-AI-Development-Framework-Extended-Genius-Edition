@@ -151,4 +151,3 @@ diff docs/benchmarks/baseline_*.json
 - [Performance Baseline](docs/benchmarks/)
 - [Codecov Dashboard](https://codecov.io/gh/<owner>/<repo>)
 - [GitHub Actions](https://github.com/<owner>/<repo>/actions)
-

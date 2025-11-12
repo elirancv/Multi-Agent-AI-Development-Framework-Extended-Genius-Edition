@@ -82,4 +82,3 @@ To minimize rollback risk:
 ---
 
 **Remember**: v1.0.x is a stable release series. Breaking changes should be deferred to v1.1.0.
-

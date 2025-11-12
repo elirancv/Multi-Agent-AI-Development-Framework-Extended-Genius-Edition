@@ -19,7 +19,7 @@ presets:
           decision: average
           list: ["CodeReviewAdvisor"]
           weights: {}
-    
+
   production:
     description: "Production Stability - Full advisors, strict thresholds"
     policy:
@@ -45,7 +45,7 @@ presets:
           weights:
             SecurityAdvisor: 1.5
             ArchitectureAdvisor: 1.2
-    
+
   research:
     description: "Research/Experimental - Relaxed scoring"
     policy:
@@ -61,4 +61,3 @@ presets:
           decision: majority
           list: ["RequirementsAdvisor"]
           weights: {}
-

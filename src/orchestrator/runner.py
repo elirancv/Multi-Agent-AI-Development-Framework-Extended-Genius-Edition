@@ -2,30 +2,30 @@
 
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, List, Optional, Sequence
-from dataclasses import dataclass, field
+import logging
 import time
 import uuid
-import logging
+from dataclasses import dataclass
+from typing import Any, Callable, Dict, List, Optional, Sequence
 
-from src.core.base import BaseFunctionalAgent, BaseAdvisor
-from src.core.types import AgentOutput
+from src.core.base import BaseAdvisor, BaseFunctionalAgent
 from src.core.memory import SharedMemory
-from src.core.resume import CheckpointStore, Checkpoint
-from .hooks import PostStepHook
-from .timeout import run_with_timeout, FutureTimeoutError
-from .eventlog import JsonlEventLog
+from src.core.resume import Checkpoint, CheckpointStore
+from src.core.types import AgentOutput
+
+from .budget import Budget, BudgetExceededError, enforce_budget
 from .cache import AgentCache
-from .task_render import render_task
 from .errors import (
-    TimeoutOrchestratorError,
-    InvalidOutputError,
-    AdvisorRejectError,
     ExhaustedRetriesError,
+    InvalidOutputError,
+    TimeoutOrchestratorError,
 )
-from .seed import seed_for
-from .budget import Budget, enforce_budget, BudgetExceededError
+from .eventlog import JsonlEventLog
+from .hooks import PostStepHook
 from .otel import span
+from .seed import seed_for
+from .task_render import render_task
+from .timeout import FutureTimeoutError, run_with_timeout
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -92,12 +92,12 @@ class Orchestrator:
 
         for idx, step in enumerate(steps):
             stage_start = time.time()
-            
+
             # Save previous content for diff comparison (before overwriting)
             prev_content = self.memory.get(f"{step.stage}.content")
             if prev_content is not None:
                 self.memory.set(f"{step.stage}.previous_content", prev_content)
-            
+
             # Set deterministic seed for reproducibility
             seed_for(self.run_id, step.stage)
 
@@ -165,9 +165,7 @@ class Orchestrator:
                 advisor = self.advisor_factory(step.advisor)
 
             advisor_name = getattr(advisor, "name", "AdvisorCouncil")
-            logger.info(
-                f"[{step.stage}] Running {agent.describe()} with advisor {advisor_name}"
-            )
+            logger.info(f"[{step.stage}] Running {agent.describe()} with advisor {advisor_name}")
 
             attempt = 0
             latest_output: Optional[AgentOutput] = None
@@ -218,9 +216,7 @@ class Orchestrator:
                     # Reconstruct AgentOutput from cache for validation
                     from src.core.types import AgentMetadata, Artifact
 
-                    artifacts = [
-                        Artifact(**a) for a in cached.get("artifacts", [])
-                    ]
+                    artifacts = [Artifact(**a) for a in cached.get("artifacts", [])]
                     metadata = AgentMetadata(**cached.get("metadata", {}))
                     current_output = AgentOutput(
                         content=cached["content"],
@@ -237,9 +233,7 @@ class Orchestrator:
                 else:
                     # Run agent with timeout
                     def _agent_call() -> AgentOutput:
-                        return agent.process(
-                            task=task, context=self.memory.to_dict()
-                        )
+                        return agent.process(task=task, context=self.memory.to_dict())
 
                     try:
                         output = run_with_timeout(_agent_call, current_timeout)
@@ -257,9 +251,7 @@ class Orchestrator:
                             agent_version,
                         )
                     except FutureTimeoutError as e:
-                        logger.error(
-                            f"[{step.stage}] Agent timeout after {current_timeout}s"
-                        )
+                        logger.error(f"[{step.stage}] Agent timeout after {current_timeout}s")
                         error_reason = TimeoutOrchestratorError.reason
                         self.eventlog.emit(
                             "error",
@@ -331,9 +323,7 @@ class Orchestrator:
                 self.memory.update(
                     {
                         f"{step.stage}.content": latest_output.content,
-                        f"{step.stage}.artifacts": [
-                            a.to_dict() for a in latest_output.artifacts
-                        ],
+                        f"{step.stage}.artifacts": [a.to_dict() for a in latest_output.artifacts],
                         f"{step.stage}.metadata": latest_output.metadata.to_dict(),
                         f"{step.stage}.review": latest_review,
                     }
@@ -355,9 +345,7 @@ class Orchestrator:
                 "agent": step.agent,
                 "advisor": step.advisor,
                 "category": step.category or "default",
-                "approved": bool(
-                    latest_review and latest_review.get("approved", False)
-                ),
+                "approved": bool(latest_review and latest_review.get("approved", False)),
                 "score": float(latest_review["score"]) if latest_review else 0.0,
                 "error_reason": error_reason,
             }
@@ -397,4 +385,3 @@ class Orchestrator:
             "history": history,
             "memory": self.memory.to_dict(),
         }
-

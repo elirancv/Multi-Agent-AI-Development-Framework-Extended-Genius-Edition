@@ -4,112 +4,111 @@
 - name: "feat"
   color: "0E8A16"
   description: "New feature"
-  
+
 - name: "feature"
   color: "0E8A16"
   description: "New feature (alias)"
-  
+
 - name: "fix"
   color: "B60205"
   description: "Bug fix"
-  
+
 - name: "bug"
   color: "B60205"
   description: "Bug fix (alias)"
-  
+
 - name: "bugfix"
   color: "B60205"
   description: "Bug fix (alias)"
-  
+
 - name: "chore"
   color: "C2E0C6"
   description: "Maintenance task"
-  
+
 - name: "maintenance"
   color: "C2E0C6"
   description: "Maintenance task (alias)"
-  
+
 - name: "docs"
   color: "006B75"
   description: "Documentation changes"
-  
+
 - name: "documentation"
   color: "006B75"
   description: "Documentation changes (alias)"
-  
+
 - name: "refactor"
   color: "FBCA04"
   description: "Code refactoring"
-  
+
 - name: "refactoring"
   color: "FBCA04"
   description: "Code refactoring (alias)"
-  
+
 - name: "perf"
   color: "1D76DB"
   description: "Performance improvement"
-  
+
 - name: "performance"
   color: "1D76DB"
   description: "Performance improvement (alias)"
-  
+
 - name: "test"
   color: "BFD4F2"
   description: "Test changes"
-  
+
 - name: "tests"
   color: "BFD4F2"
   description: "Test changes (alias)"
-  
+
 - name: "ci"
   color: "EDEDED"
   description: "CI/CD changes"
-  
+
 - name: "cd"
   color: "EDEDED"
   description: "CI/CD changes (alias)"
-  
+
 - name: "workflow"
   color: "EDEDED"
   description: "CI/CD changes (alias)"
-  
+
 - name: "v1.1"
   color: "5319E7"
   description: "Targeted for v1.1.0"
-  
+
 - name: "v1.0"
   color: "0E8A16"
   description: "Targeted for v1.0.x"
-  
+
 - name: "breaking"
   color: "B60205"
   description: "Breaking change"
-  
+
 - name: "major"
   color: "B60205"
   description: "Major version change"
-  
+
 - name: "minor"
   color: "0E8A16"
   description: "Minor version change"
-  
+
 - name: "patch"
   color: "1D76DB"
   description: "Patch version change"
-  
+
 - name: "enhancement"
   color: "0E8A16"
   description: "Enhancement"
-  
+
 - name: "plugin-api"
   color: "D4C5F9"
   description: "Plugin API related"
-  
+
 - name: "gallery"
   color: "D4C5F9"
   description: "Pipelines Gallery"
-  
+
 - name: "pypi"
   color: "D4C5F9"
   description: "PyPI publishing"
-

@@ -66,7 +66,7 @@ See `.cursor/rules/` directory for:
 
 ---
 
-**Note:** 
+**Note:**
 - This is a **TEMPLATE** file. Customize it for your project.
 - Most rules are in `.cursor/rules/` subdirectories using `.mdc` format with frontmatter (description, globs, alwaysApply) as per [Cursor official documentation](https://cursor.com/docs/context/rules).
 - See `docs/TEMPLATE_GUIDE.md` for template usage instructions.

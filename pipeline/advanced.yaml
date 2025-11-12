@@ -22,4 +22,3 @@ stages:
     advisor: PromptRefinerAdvisor
     task: "Refine the product prompt based on last review for: {product_idea}"
     max_retries: 1
-

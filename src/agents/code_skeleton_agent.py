@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from typing import Any, Dict
+
 from src.core.base import BaseFunctionalAgent
-from src.core.types import AgentOutput, Artifact, AgentMetadata
+from src.core.types import AgentMetadata, AgentOutput, Artifact
 
 SIMPLE_HTML = """<!doctype html>
 <html lang="en">
@@ -75,4 +76,3 @@ class CodeSkeletonAgent(BaseFunctionalAgent):
         return AgentOutput(
             content="Generated static code skeleton.", artifacts=artifacts, metadata=meta
         )
-

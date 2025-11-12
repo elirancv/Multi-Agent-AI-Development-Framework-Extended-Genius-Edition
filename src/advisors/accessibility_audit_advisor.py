@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any, Dict
 
 from src.core.base import BaseAdvisor
-from src.core.types import AgentOutput, AdvisorReview
+from src.core.types import AdvisorReview, AgentOutput
 
 
 class AccessibilityAuditAdvisor(BaseAdvisor):
@@ -13,9 +13,7 @@ class AccessibilityAuditAdvisor(BaseAdvisor):
 
     name = "AccessibilityAuditAdvisor"
 
-    def review(
-        self, output: AgentOutput, task: str, context: Dict[str, Any]
-    ) -> AdvisorReview:
+    def review(self, output: AgentOutput, task: str, context: Dict[str, Any]) -> AdvisorReview:
         """
         Review accessibility audit output.
 
@@ -31,9 +29,7 @@ class AccessibilityAuditAdvisor(BaseAdvisor):
         suggestions = []
 
         # Check for audit report artifact
-        has_report = any(
-            a.name == "accessibility_audit.md" for a in output.artifacts
-        )
+        has_report = any(a.name == "accessibility_audit.md" for a in output.artifacts)
 
         if not has_report:
             issues.append("Missing accessibility_audit.md artifact")
@@ -59,4 +55,3 @@ class AccessibilityAuditAdvisor(BaseAdvisor):
             "summary": f"Accessibility audit review: {len(issues)} critical issues",
             "severity": severity,
         }
-

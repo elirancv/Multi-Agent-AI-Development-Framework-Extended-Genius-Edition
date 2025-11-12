@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any, Dict
 
 from src.core.base import BaseAdvisor
-from src.core.types import AgentOutput, AdvisorReview
+from src.core.types import AdvisorReview, AgentOutput
 
 
 class StaticLinterAdvisor(BaseAdvisor):
@@ -13,9 +13,7 @@ class StaticLinterAdvisor(BaseAdvisor):
 
     name = "StaticLinterAdvisor"
 
-    def review(
-        self, output: AgentOutput, task: str, context: Dict[str, Any]
-    ) -> AdvisorReview:
+    def review(self, output: AgentOutput, task: str, context: Dict[str, Any]) -> AdvisorReview:
         """
         Review linting output.
 
@@ -31,9 +29,7 @@ class StaticLinterAdvisor(BaseAdvisor):
         suggestions = []
 
         # Check for lint report artifact
-        has_report = any(
-            a.name == "lint_report.md" for a in output.artifacts
-        )
+        has_report = any(a.name == "lint_report.md" for a in output.artifacts)
 
         if not has_report:
             issues.append("Missing lint_report.md artifact")
@@ -58,4 +54,3 @@ class StaticLinterAdvisor(BaseAdvisor):
             "summary": f"Linting review: {len(issues)} issues found",
             "severity": severity,
         }
-

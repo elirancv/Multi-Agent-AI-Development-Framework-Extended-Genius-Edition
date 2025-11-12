@@ -63,4 +63,3 @@ echo "  gh milestone view $MILESTONE"
 echo ""
 echo "List issues:"
 echo "  gh issue list -m $MILESTONE"
-

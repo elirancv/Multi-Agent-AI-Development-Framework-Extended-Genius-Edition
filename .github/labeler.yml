@@ -56,4 +56,3 @@ gallery:
 pypi:
   - changed-files:
       - any-glob-to-any-file: ['pyproject.toml', '.github/workflows/publish-pypi.yml']
-

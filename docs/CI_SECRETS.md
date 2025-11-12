@@ -119,4 +119,3 @@ After setting `PYPI_TOKEN`, create a test release:
 - [GitHub Secrets Documentation](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 - [Codecov Setup](https://docs.codecov.com/docs)
 - [PyPI API Tokens](https://pypi.org/help/#apitoken)
-

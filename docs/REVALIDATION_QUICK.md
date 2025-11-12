@@ -24,4 +24,3 @@ OWNER=myusername REPO=myrepo ./scripts/revalidate.sh
 **Result**: Check `out/validation/FINAL_VALIDATION.md` for GREEN/YELLOW/RED status.
 
 **If GREEN**: Ship with `CREATE_TAG=true SIGN_TAG=true TAG_NAME=v1.0.0 ./scripts/commit_push.sh`
-

@@ -36,4 +36,3 @@ Write-Host "Next steps:"
 Write-Host "  git add -A"
 Write-Host "  git commit -m 'chore: bump version to $NextVersion'"
 Write-Host "  git push"
-

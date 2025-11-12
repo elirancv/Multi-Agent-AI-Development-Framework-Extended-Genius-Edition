@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Dict, Any
+from typing import Any, Dict
 
 
 class QualityGate:
@@ -15,4 +15,3 @@ class QualityGate:
             return False
         artifacts = step_result.get("artifacts") or []
         return len(artifacts) > 0
-

@@ -72,9 +72,7 @@ class TestResult:
         }
 
 
-def run_cli_command(
-    args: List[str], timeout: Optional[int] = None
-) -> Tuple[int, str, str, float]:
+def run_cli_command(args: List[str], timeout: Optional[int] = None) -> Tuple[int, str, str, float]:
     """
     Helper function to run CLI commands with timing.
 
@@ -126,7 +124,7 @@ def run_command(
 def has_graphviz() -> Tuple[bool, str]:
     """
     Check if graphviz is available (both Python package and system dot command).
-    
+
     Returns:
         Tuple of (is_available, error_message)
     """
@@ -135,7 +133,7 @@ def has_graphviz() -> Tuple[bool, str]:
         import graphviz
     except ImportError:
         return False, "Python package 'graphviz' not installed. Install with: pip install graphviz"
-    
+
     # Check if dot command is available in PATH
     if shutil.which("dot") is None:
         return False, (
@@ -145,7 +143,7 @@ def has_graphviz() -> Tuple[bool, str]:
             "  - Linux: apt-get install graphviz (Debian/Ubuntu) or yum install graphviz (RHEL/CentOS)\n"
             "  - macOS: brew install graphviz"
         )
-    
+
     # Try to create a simple graph to verify it works
     try:
         g = graphviz.Digraph("test")
@@ -164,9 +162,7 @@ def test_dry_run(
     """Test 1: Dry-run validation."""
     print(f"{BLUE}[TEST 1]{RESET} Dry-run validation...", end=" ", flush=True)
     start = time.time()
-    exit_code, stdout, stderr, elapsed = run_cli_command(
-        ["--pipeline", pipeline, "--dry-run"]
-    )
+    exit_code, stdout, stderr, elapsed = run_cli_command(["--pipeline", pipeline, "--dry-run"])
 
     if exit_code == 0:
         try:
@@ -178,7 +174,9 @@ def test_dry_run(
                 if exceeded:
                     msg += f" (slow: {elapsed:.2f}s > {max_seconds}s)"
                     if strict_performance:
-                        print(f"{RED}FAILED{RESET} (performance threshold exceeded: {elapsed:.2f}s > {max_seconds}s)")
+                        print(
+                            f"{RED}FAILED{RESET} (performance threshold exceeded: {elapsed:.2f}s > {max_seconds}s)"
+                        )
                         return TestResult(
                             "Dry-run validation",
                             False,
@@ -210,12 +208,10 @@ def test_dry_run(
     )
 
 
-def test_graph_export(
-    pipeline: str, verbose: bool = False, out_dir: str = "out"
-) -> TestResult:
+def test_graph_export(pipeline: str, verbose: bool = False, out_dir: str = "out") -> TestResult:
     """Test 2: Graph export."""
     print(f"{BLUE}[TEST 2]{RESET} Graph export...", end=" ", flush=True)
-    
+
     graphviz_available, error_msg = has_graphviz()
     if not graphviz_available:
         print(f"{YELLOW}SKIPPED{RESET} (graphviz not available)")
@@ -226,7 +222,7 @@ def test_graph_export(
             "",
             skipped=True,
         )
-    
+
     graph_path = Path(out_dir) / "smoke_test_graph.dot"
     graph_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -264,9 +260,7 @@ def test_graph_export(
         )
 
     print(f"{RED}FAILED{RESET}")
-    return TestResult(
-        "Graph export", False, "Graph export failed", stderr, seconds=elapsed
-    )
+    return TestResult("Graph export", False, "Graph export failed", stderr, seconds=elapsed)
 
 
 def test_sequential_execution(
@@ -278,7 +272,7 @@ def test_sequential_execution(
     """Test 3: Sequential execution."""
     print(f"{BLUE}[TEST 3]{RESET} Sequential execution...", end=" ", flush=True)
     start = time.time()
-    
+
     args = ["--pipeline", pipeline, "--output", "json"]
     if save_artifacts:
         args.append("--save-artifacts")
@@ -315,13 +309,11 @@ def test_sequential_execution(
     )
 
 
-def test_no_cache(
-    pipeline: str, verbose: bool = False, timeout: Optional[int] = 300
-) -> TestResult:
+def test_no_cache(pipeline: str, verbose: bool = False, timeout: Optional[int] = 300) -> TestResult:
     """Test 4: Cache control."""
     print(f"{BLUE}[TEST 4]{RESET} Cache control (--no-cache)...", end=" ", flush=True)
     start = time.time()
-    
+
     exit_code, stdout, stderr, elapsed = run_cli_command(
         ["--pipeline", pipeline, "--no-cache", "--output", "json"], timeout=timeout
     )
@@ -356,7 +348,7 @@ def test_budget_enforcement(
     import yaml
 
     try:
-        with open(pipeline, "r", encoding="utf-8") as f:
+        with open(pipeline, encoding="utf-8") as f:
             data = yaml.safe_load(f)
         policy_budget = data.get("policy", {}).get("budget")
         if not policy_budget:
@@ -420,7 +412,7 @@ def test_top_suggestions(
     """Test 6: Top suggestions in report."""
     print(f"{BLUE}[TEST 6]{RESET} Top suggestions report...", end=" ", flush=True)
     start = time.time()
-    
+
     exit_code, stdout, stderr, elapsed = run_cli_command(
         [
             "--pipeline",
@@ -474,10 +466,10 @@ def write_junit_xml(results: List[TestResult], out_path: str, verbose: bool = Fa
         verbose: Include system-out/system-err for passed tests
     """
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
-    
+
     timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
     total_time = sum(r.seconds for r in results)
-    
+
     testsuite = Element(
         "testsuite",
         name="smoke",
@@ -487,18 +479,16 @@ def write_junit_xml(results: List[TestResult], out_path: str, verbose: bool = Fa
         skipped=str(sum(1 for r in results if r.skipped)),
         time=f"{total_time:.3f}",
     )
-    
+
     for r in results:
-        testcase = SubElement(
-            testsuite, "testcase", name=r.name, time=f"{r.seconds:.3f}"
-        )
+        testcase = SubElement(testsuite, "testcase", name=r.name, time=f"{r.seconds:.3f}")
         if r.skipped:
             skipped_elem = SubElement(testcase, "skipped")
             skipped_elem.text = r.message or "skipped"
         elif not r.passed:
             failure = SubElement(testcase, "failure", message=r.message or "failed")
             failure.text = r.details or ""
-        
+
         # Add system-out/system-err for verbose output or failures
         if verbose or not r.passed:
             if r.details:
@@ -507,7 +497,7 @@ def write_junit_xml(results: List[TestResult], out_path: str, verbose: bool = Fa
             if hasattr(r, "stderr") and r.stderr:
                 se = SubElement(testcase, "system-err")
                 se.text = r.stderr[:20000]
-    
+
     with open(out_path, "wb") as f:
         f.write(b'<?xml version="1.0" encoding="UTF-8"?>\n')
         f.write(tostring(testsuite))
@@ -522,16 +512,16 @@ def write_markdown_summary(results: List[TestResult], out_path: str) -> None:
         out_path: Output file path
     """
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
-    
+
     lines = ["# Smoke Test Summary", ""]
     lines.append(f"Generated: {datetime.datetime.now().isoformat()}")
     lines.append("")
-    
+
     passed = sum(1 for r in results if r.passed and not r.skipped)
     failed = sum(1 for r in results if not r.passed and not r.skipped)
     skipped = sum(1 for r in results if r.skipped)
     total_time = sum(r.seconds for r in results)
-    
+
     lines.extend(
         [
             "## Summary",
@@ -544,7 +534,7 @@ def write_markdown_summary(results: List[TestResult], out_path: str) -> None:
             "",
         ]
     )
-    
+
     for r in results:
         status_icon = {"passed": "[PASS]", "failed": "[FAIL]", "skipped": "[SKIP]"}[
             "skipped" if r.skipped else ("passed" if r.passed else "failed")
@@ -557,7 +547,7 @@ def write_markdown_summary(results: List[TestResult], out_path: str) -> None:
             details_preview = r.details[:200].replace("\n", " ")
             lines.append(f"  - Details: {details_preview}")
         lines.append("")
-    
+
     Path(out_path).write_text("\n".join(lines), encoding="utf-8")
 
 
@@ -565,7 +555,7 @@ def test_all_pipelines_dry_run(verbose: bool = False) -> TestResult:
     """Test 7: Validate all pipelines in pipeline/ directory."""
     print(f"{BLUE}[TEST 7]{RESET} Validate all pipelines...", end=" ", flush=True)
     start = time.time()
-    
+
     pipeline_dir = Path("pipeline")
     if not pipeline_dir.exists():
         print(f"{RED}FAILED{RESET} (pipeline/ directory not found)")
@@ -591,9 +581,7 @@ def test_all_pipelines_dry_run(verbose: bool = False) -> TestResult:
 
     failed = []
     for yaml_file in yaml_files:
-        exit_code, _, stderr, _ = run_cli_command(
-            ["--pipeline", str(yaml_file), "--dry-run"]
-        )
+        exit_code, _, stderr, _ = run_cli_command(["--pipeline", str(yaml_file), "--dry-run"])
         if exit_code != 0:
             failed.append(str(yaml_file))
 
@@ -620,9 +608,7 @@ def test_all_pipelines_dry_run(verbose: bool = False) -> TestResult:
 
 def main() -> int:
     """Run smoke test suite."""
-    parser = argparse.ArgumentParser(
-        description="Run smoke tests for multi-agent pipeline system"
-    )
+    parser = argparse.ArgumentParser(description="Run smoke tests for multi-agent pipeline system")
     parser.add_argument(
         "--pipeline",
         type=str,
@@ -693,18 +679,34 @@ def main() -> int:
     )
 
     args = parser.parse_args()
-    
+
     # Define available tests
     TESTS = [
-        {"name": "Dry-run validation", "slow": False, "description": "Validate pipeline YAML structure"},
-        {"name": "Graph export", "slow": False, "description": "Export pipeline graph (requires graphviz)"},
+        {
+            "name": "Dry-run validation",
+            "slow": False,
+            "description": "Validate pipeline YAML structure",
+        },
+        {
+            "name": "Graph export",
+            "slow": False,
+            "description": "Export pipeline graph (requires graphviz)",
+        },
         {"name": "Sequential execution", "slow": True, "description": "Run pipeline sequentially"},
         {"name": "Cache control", "slow": True, "description": "Test cache behavior"},
         {"name": "Budget enforcement", "slow": True, "description": "Test budget limits"},
-        {"name": "Top suggestions", "slow": True, "description": "Test report with top suggestions"},
-        {"name": "All pipelines validation", "slow": False, "description": "Validate all pipeline files"},
+        {
+            "name": "Top suggestions",
+            "slow": True,
+            "description": "Test report with top suggestions",
+        },
+        {
+            "name": "All pipelines validation",
+            "slow": False,
+            "description": "Validate all pipeline files",
+        },
     ]
-    
+
     # Handle --list-tests
     if args.list_tests:
         print("Available tests:")
@@ -742,7 +744,10 @@ def main() -> int:
     # Test 1: Dry-run
     if not should_stop and (not args.test or args.test == "dry-run"):
         result = test_dry_run(
-            str(pipeline_path), args.verbose, max_seconds=args.max_dryrun_sec, strict_performance=args.strict_performance
+            str(pipeline_path),
+            args.verbose,
+            max_seconds=args.max_dryrun_sec,
+            strict_performance=args.strict_performance,
         )
         results.append(result)
         should_stop = check_fail_fast(result)
@@ -754,11 +759,7 @@ def main() -> int:
         should_stop = check_fail_fast(result)
 
     # Test 3: Sequential execution (skip if --skip-slow)
-    if (
-        not should_stop
-        and not args.skip_slow
-        and (not args.test or args.test == "sequential")
-    ):
+    if not should_stop and not args.skip_slow and (not args.test or args.test == "sequential"):
         if timeout_remaining:
             elapsed = time.time() - suite_start
             timeout_remaining = max(0, timeout_remaining - elapsed)
@@ -822,9 +823,7 @@ def main() -> int:
                     results.append(result)
                     should_stop = check_fail_fast(result)
             else:
-                result = test_budget_enforcement(
-                    str(pipeline_path), args.verbose, timeout=300
-                )
+                result = test_budget_enforcement(str(pipeline_path), args.verbose, timeout=300)
                 results.append(result)
                 should_stop = check_fail_fast(result)
 
@@ -847,9 +846,7 @@ def main() -> int:
                     results.append(result)
                     should_stop = check_fail_fast(result)
             else:
-                result = test_top_suggestions(
-                    str(pipeline_path), args.verbose, timeout=300
-                )
+                result = test_top_suggestions(str(pipeline_path), args.verbose, timeout=300)
                 results.append(result)
                 should_stop = check_fail_fast(result)
 
@@ -888,7 +885,7 @@ def main() -> int:
     # Write reports
     junit_path = str(out_dir / "smoke_junit.xml")
     md_path = str(out_dir / "SMOKE_SUMMARY.md")
-    
+
     try:
         write_junit_xml(results, junit_path, verbose=args.verbose)
         write_markdown_summary(results, md_path)
@@ -919,4 +916,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

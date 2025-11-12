@@ -95,4 +95,3 @@ Once all items are checked, you're ready to start development with Cursor AI!
 - See `docs/TEMPLATE_GUIDE.md` for detailed information
 - See `docs/SETUP_TEMPLATE.md` for step-by-step instructions
 - Check `.cursor/rules/README.mdc` for rule documentation
-

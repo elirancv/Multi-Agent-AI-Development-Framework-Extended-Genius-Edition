@@ -14,15 +14,14 @@ jobs:
   sync-labels:
     name: Sync GitHub Labels
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Sync labels
         uses: actions/labeler@v5
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           configuration-path: .github/labels.yml
           sync-labels: true
-

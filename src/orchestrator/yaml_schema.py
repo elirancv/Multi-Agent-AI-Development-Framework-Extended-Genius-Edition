@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import Dict, List, Literal, Optional
+
 from pydantic import BaseModel, Field, field_validator
 
 
@@ -68,4 +69,3 @@ class PipelineModel(BaseModel):
         if len(names) != len(set(names)):
             raise ValueError("Stage names must be unique")
         return v
-

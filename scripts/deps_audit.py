@@ -6,7 +6,7 @@ import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 ALLOWED_LICENSES = {"MIT", "Apache-2.0", "Apache 2.0", "BSD-3-Clause", "BSD-2-Clause", "ISC"}
 
@@ -66,28 +66,34 @@ def audit_dependencies() -> Dict[str, Any]:
         "blocked": [],
         "frozen": frozen,
     }
-    
+
     for package, version in frozen.items():
         license_text, status = get_package_license(package)
         if check_license_allowed(license_text):
-            audit_result["allowed"].append({
-                "package": package,
-                "version": version,
-                "license": license_text,
-            })
+            audit_result["allowed"].append(
+                {
+                    "package": package,
+                    "version": version,
+                    "license": license_text,
+                }
+            )
         elif license_text:
-            audit_result["unknown"].append({
-                "package": package,
-                "version": version,
-                "license": license_text,
-            })
+            audit_result["unknown"].append(
+                {
+                    "package": package,
+                    "version": version,
+                    "license": license_text,
+                }
+            )
         else:
-            audit_result["blocked"].append({
-                "package": package,
-                "version": version,
-                "status": status,
-            })
-    
+            audit_result["blocked"].append(
+                {
+                    "package": package,
+                    "version": version,
+                    "status": status,
+                }
+            )
+
     return audit_result
 
 
@@ -104,38 +110,44 @@ def generate_markdown_report(audit_result: Dict[str, Any]) -> str:
         "## Allowed Dependencies (MIT/Apache2/BSD)",
         "",
     ]
-    
+
     for dep in audit_result["allowed"]:
         lines.append(f"- **{dep['package']}** {dep['version']} - {dep['license']}")
-    
+
     if audit_result["unknown"]:
-        lines.extend([
-            "",
-            "## Unknown Licenses (Review Required)",
-            "",
-        ])
+        lines.extend(
+            [
+                "",
+                "## Unknown Licenses (Review Required)",
+                "",
+            ]
+        )
         for dep in audit_result["unknown"]:
             lines.append(f"- **{dep['package']}** {dep['version']} - {dep['license']}")
-    
+
     if audit_result["blocked"]:
-        lines.extend([
-            "",
-            "## Blocked/No License Info",
-            "",
-        ])
+        lines.extend(
+            [
+                "",
+                "## Blocked/No License Info",
+                "",
+            ]
+        )
         for dep in audit_result["blocked"]:
             lines.append(f"- **{dep['package']}** {dep['version']} - {dep['status']}")
-    
-    lines.extend([
-        "",
-        "## Frozen Dependencies",
-        "",
-        "```",
-    ])
+
+    lines.extend(
+        [
+            "",
+            "## Frozen Dependencies",
+            "",
+            "```",
+        ]
+    )
     for package, version in sorted(audit_result["frozen"].items()):
         lines.append(f"{package}=={version}")
     lines.append("```")
-    
+
     return "\n".join(lines)
 
 
@@ -143,33 +155,32 @@ def main() -> int:
     """Main entry point."""
     print("Auditing dependencies...", file=sys.stderr)
     audit_result = audit_dependencies()
-    
+
     # Save JSON
     json_path = Path("deps-audit.json")
     json_path.write_text(json.dumps(audit_result, indent=2))
     print(f"Saved JSON: {json_path}", file=sys.stderr)
-    
+
     # Save Markdown
     md_path = Path("docs/deps-audit.md")
     md_path.parent.mkdir(parents=True, exist_ok=True)
     md_path.write_text(generate_markdown_report(audit_result))
     print(f"Saved Markdown: {md_path}", file=sys.stderr)
-    
+
     # Summary
-    print(f"\nSummary:", file=sys.stderr)
+    print("\nSummary:", file=sys.stderr)
     print(f"  Total: {audit_result['total']}", file=sys.stderr)
     print(f"  Allowed: {len(audit_result['allowed'])}", file=sys.stderr)
     print(f"  Unknown: {len(audit_result['unknown'])}", file=sys.stderr)
     print(f"  Blocked: {len(audit_result['blocked'])}", file=sys.stderr)
-    
+
     if audit_result["unknown"] or audit_result["blocked"]:
         print("\n⚠️  Review required for unknown/blocked licenses", file=sys.stderr)
         return 1
-    
+
     print("\n✅ All dependencies have allowed licenses", file=sys.stderr)
     return 0
 
 
 if __name__ == "__main__":
     sys.exit(main())
-

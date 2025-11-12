@@ -5,10 +5,10 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
-from dataclasses import dataclass, field
 import json
 import time
+from dataclasses import dataclass, field
+from typing import Any, Dict, Optional
 
 
 @dataclass
@@ -50,4 +50,3 @@ class CheckpointStore:
             return None
         data = json.loads(raw)
         return Checkpoint(**data)
-

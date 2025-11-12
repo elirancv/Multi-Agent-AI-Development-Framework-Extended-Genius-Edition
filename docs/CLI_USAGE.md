@@ -71,4 +71,3 @@ python cli.py --pipeline pipeline/example.yaml --output json > result.json
 ```bash
 python cli.py --help
 ```
-

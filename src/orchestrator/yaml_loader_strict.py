@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 from typing import Dict, List, Tuple
+
 import yaml
-from .yaml_schema import PipelineModel
+
+from .factory import CORE_ADVISORS, CORE_AGENTS
 from .runner_parallel import PipelineStep
-from .factory import CORE_AGENTS, CORE_ADVISORS
+from .yaml_schema import PipelineModel
 
 
 class YAMLPipelineLoaderStrict:
@@ -15,18 +17,18 @@ class YAMLPipelineLoaderStrict:
     def load(self, path: str) -> Tuple[List[PipelineStep], Dict[str, float]]:
         """
         Load pipeline from YAML file with strict validation.
-        
+
         Args:
             path: Path to YAML file
-            
+
         Returns:
             Tuple of (steps, score_thresholds dict)
-            
+
         Raises:
             KeyError: If agent/advisor not registered
             ValueError: If validation fails
         """
-        with open(path, "r", encoding="utf-8") as f:
+        with open(path, encoding="utf-8") as f:
             data = yaml.safe_load(f)
 
         # Validate with Pydantic
@@ -54,9 +56,6 @@ class YAMLPipelineLoaderStrict:
         ]
 
         # Extract policy thresholds
-        policy = (
-            model.policy.score_thresholds if model.policy else {}
-        )  # category -> threshold
+        policy = model.policy.score_thresholds if model.policy else {}  # category -> threshold
 
         return steps, policy
-

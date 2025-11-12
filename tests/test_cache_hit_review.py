@@ -1,7 +1,7 @@
 """Test that review works correctly on cache hit."""
 
+from src.orchestrator.factory import advisor_factory, agent_factory
 from src.orchestrator.runner import Orchestrator, PipelineStep
-from src.orchestrator.factory import agent_factory, advisor_factory
 
 
 def test_review_works_on_cache_hit() -> None:
@@ -52,4 +52,3 @@ def test_cache_hit_produces_valid_output() -> None:
     assert result["history"][0]["stage"] == "test_stage"
     assert "approved" in result["history"][0]
     assert "score" in result["history"][0]
-

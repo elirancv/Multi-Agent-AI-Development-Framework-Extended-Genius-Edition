@@ -1,6 +1,6 @@
 # Release Notes v1.0.0
 
-**Release Date**: 2025-01-XX  
+**Release Date**: 2025-01-XX
 **Status**: Stable Release
 
 ## 🎉 Major Release: v1.0.0
@@ -121,4 +121,3 @@ Thank you to all contributors and early adopters who helped shape v1.0.
 ---
 
 **Full Changelog**: [CHANGELOG.md](CHANGELOG.md)
-

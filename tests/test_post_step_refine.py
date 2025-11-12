@@ -1,8 +1,8 @@
 """Test post-step hooks, especially PromptRefinerOnFailure."""
 
-from src.orchestrator.runner import Orchestrator, PipelineStep
-from src.orchestrator.factory import agent_factory, advisor_factory
+from src.orchestrator.factory import advisor_factory, agent_factory
 from src.orchestrator.hooks import PromptRefinerOnFailure
+from src.orchestrator.runner import Orchestrator, PipelineStep
 
 
 def test_prompt_refiner_runs_on_failure() -> None:
@@ -30,9 +30,7 @@ def test_prompt_refiner_runs_on_failure() -> None:
         agent_factory=agent_factory,
         advisor_factory=strict_advisor_factory,
         post_step_hooks=[
-            PromptRefinerOnFailure(
-                agent_factory=agent_factory, advisor_factory=advisor_factory
-            )
+            PromptRefinerOnFailure(agent_factory=agent_factory, advisor_factory=advisor_factory)
         ],
     )
 
@@ -60,9 +58,7 @@ def test_prompt_refiner_skips_on_success() -> None:
         agent_factory=agent_factory,
         advisor_factory=advisor_factory,
         post_step_hooks=[
-            PromptRefinerOnFailure(
-                agent_factory=agent_factory, advisor_factory=advisor_factory
-            )
+            PromptRefinerOnFailure(agent_factory=agent_factory, advisor_factory=advisor_factory)
         ],
     )
 
@@ -82,4 +78,3 @@ def test_prompt_refiner_skips_on_success() -> None:
     # On success, no refined prompt should be created
     assert res["history"][0]["approved"] is True
     assert orch.memory.get("requirements.refined_prompt.content") is None
-

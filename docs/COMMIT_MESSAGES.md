@@ -104,4 +104,3 @@ chore(config): add GitHub protection and CI workflows
 
 - [Semantic Release Guidelines](SEMANTIC_RELEASE.md)
 - [Conventional Commits](https://www.conventionalcommits.org/)
-

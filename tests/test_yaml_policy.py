@@ -1,12 +1,11 @@
 """Test YAML loader with policy and dependencies."""
 
 import pytest
+
 from src.orchestrator.yaml_loader import (
-    YAMLPipelineLoader,
     PipelineValidationError,
-    Policy,
+    YAMLPipelineLoader,
 )
-from src.orchestrator.factory import CORE_AGENTS, CORE_ADVISORS
 
 
 def test_load_policy() -> None:
@@ -92,4 +91,3 @@ stages:
 
     with pytest.raises(PipelineValidationError, match="unknown dependency"):
         loader.load(yaml_content)
-

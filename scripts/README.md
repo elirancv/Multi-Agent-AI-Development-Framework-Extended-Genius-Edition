@@ -57,4 +57,3 @@ DRY_RUN=true ./scripts/commit_push.sh
 # PowerShell
 .\scripts\commit_push.ps1 -DryRun:$true
 ```
-

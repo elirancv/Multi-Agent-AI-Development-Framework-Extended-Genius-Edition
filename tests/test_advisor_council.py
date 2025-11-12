@@ -1,6 +1,6 @@
 """Test Advisor Council for multi-advisor reviews."""
 
-from src.core.types import AgentOutput, Artifact, AgentMetadata
+from src.core.types import AgentMetadata, AgentOutput, Artifact
 from src.orchestrator.council import AdvisorCouncil
 from src.orchestrator.factory import advisor_factory
 
@@ -54,4 +54,3 @@ def test_council_aggregates_issues() -> None:
     assert "critical_issues" in review
     assert "suggestions" in review
     assert "severity" in review
-

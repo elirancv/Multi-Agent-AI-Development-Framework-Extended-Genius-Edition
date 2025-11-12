@@ -7,7 +7,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from typing import Any, Dict
-from .types import AgentOutput, AdvisorReview
+
+from .types import AdvisorReview, AgentOutput
 
 
 class BaseFunctionalAgent(ABC):
@@ -42,9 +43,7 @@ class BaseAdvisor(ABC):
     name: str = "BaseAdvisor"
 
     @abstractmethod
-    def review(
-        self, output: AgentOutput, task: str, context: Dict[str, Any]
-    ) -> AdvisorReview:
+    def review(self, output: AgentOutput, task: str, context: Dict[str, Any]) -> AdvisorReview:
         """
         Return an AdvisorReview dict with the required fields.
         Implementers should ensure score ∈ [0,1] and severity is coherent with issues.
@@ -54,4 +53,3 @@ class BaseAdvisor(ABC):
     def gate(self, review: AdvisorReview, min_score: float) -> bool:
         """Convenience: decide pass/fail by score and approval flag."""
         return review["approved"] and review["score"] >= min_score
-

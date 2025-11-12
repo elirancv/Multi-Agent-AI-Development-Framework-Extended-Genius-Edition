@@ -73,4 +73,3 @@ You are an AI assistant helping develop a **multi-agent system** where:
 **See Also:**
 - `.cursor/rules/` - Detailed rules by topic
 - `agents/<agent>/AGENTS.md` - Agent-specific instructions
-

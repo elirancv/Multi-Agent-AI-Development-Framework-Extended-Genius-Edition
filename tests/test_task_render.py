@@ -32,4 +32,3 @@ def test_multiple_replacements() -> None:
     result = render_task(template, memory)
     assert "App" in result
     assert "mobile" in result
-

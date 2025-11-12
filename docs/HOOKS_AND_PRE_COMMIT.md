@@ -184,4 +184,3 @@ git commit --no-verify
 **Ruff errors:**
 - Auto-fix: `ruff check --fix .`
 - Format: `ruff format .`
-

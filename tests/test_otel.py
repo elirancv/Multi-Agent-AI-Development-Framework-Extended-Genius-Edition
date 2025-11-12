@@ -14,4 +14,3 @@ def test_span_context_manager():
     # Should not raise even if opentelemetry is not installed
     with span("test_span", {"key": "value"}):
         pass
-

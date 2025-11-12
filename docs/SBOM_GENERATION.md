@@ -126,4 +126,3 @@ curl -X POST "https://dependency-track.example.com/api/v1/bom" \
 - [CycloneDX Specification](https://cyclonedx.org/specification/overview/)
 - [CISA SBOM Requirements](https://www.cisa.gov/sbom)
 - [GitHub Dependency Graph](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-the-dependency-graph)
-

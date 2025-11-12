@@ -46,4 +46,3 @@ def pipeline_to_dot(steps: List[PipelineStep]) -> Digraph:
             g.edge(dep, s.stage)
 
     return g
-
