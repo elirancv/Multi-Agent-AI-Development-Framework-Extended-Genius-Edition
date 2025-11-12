@@ -74,7 +74,7 @@ See [docs/QUICKSTART.md](docs/QUICKSTART.md) for detailed setup and [docs/INDEX.
 **Need help?** 
 - Run diagnostics: `python scripts/doctor.py` or `python cli.py doctor`
 - Check [Known Issues](docs/KNOWN_ISSUES.md) for common problems
-- Open an [issue](https://github.com/your-org/AgentsSystemV2/issues) or check our [documentation](docs/INDEX.md)
+- Open an [issue](https://github.com/elirancv/Multi-Agent-AI-Development-Framework-Extended-Genius-Edition/issues) or check our [documentation](docs/INDEX.md)
 
 ---
 
